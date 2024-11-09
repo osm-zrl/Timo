@@ -11,8 +11,8 @@ public class FrontendProcessLister {
     public static void main(String[] args) {
         // PowerShell command to get process name, ID, memory (MB), CPU usage, and running duration (hh:mm:ss)
         //String command = "powershell.exe -Command \"Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.Name -notin @('TextInputHost', 'ApplicationFrameHost') } | ForEach-Object { '{0},{1},{2:N2},{3:N2},{4}' -f $_.Name, $_.Id, ($_.WorkingSet64 / 1MB), $_.CPU, ((Get-Date) - $_.StartTime).ToString('hh\\:mm\\:ss') }\"";
-        String command = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -Command \"Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.Name -notin @('TextInputHost', 'ApplicationFrameHost') } | ForEach-Object { '{0},{1},{2:N2},{3:N2},{4}' -f $_.Name, $_.Id, ($_.WorkingSet64 / 1MB), $_.CPU, ((Get-Date) - $_.StartTime).ToString('hh\\:mm\\:ss') }\"";
-
+        //String command = "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -Command \"Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.Name -notin @('TextInputHost', 'ApplicationFrameHost') } | ForEach-Object { '{0},{1},{2:N2},{3:N2},{4}' -f $_.Name, $_.Id, ($_.WorkingSet64 / 1MB), $_.CPU, ((Get-Date) - $_.StartTime).ToString('hh\\:mm\\:ss') }\"";
+        String command = "powershell.exe -Command \"Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.Name -notin @('TextInputHost', 'ApplicationFrameHost') } | ForEach-Object { '{0},{1},{2:N2},{3:N2},{4}' -f $_.Name, $_.Id, ($_.WorkingSet64 / 1MB), ($_.CPU -ne $null ? $_.CPU : 0), ((Get-Date) - $_.StartTime).ToString('hh\\:mm\\:ss') }\"";
 
         List<ProcessInfo> processList = new ArrayList<>();
 
