@@ -1,5 +1,7 @@
 package com.example.timo;
 
+import com.example.timo.process.FrontendProcessLister;
+import com.example.timo.process.ProcessInfo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -9,6 +11,11 @@ public class HelloController {
 
     @FXML
     protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+        ProcessInfo[] processes = FrontendProcessLister.getProcessList();
+
+        System.out.println("Liste des processus avec interface graphique :");
+        for (ProcessInfo processInfo : processes) {
+            System.out.println(processInfo);
+        }
     }
 }
