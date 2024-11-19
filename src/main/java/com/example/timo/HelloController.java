@@ -1,7 +1,7 @@
 package com.example.timo;
 
+import com.example.timo.Module.ProcessInfo;
 import com.example.timo.process.FrontendProcessLister;
-import com.example.timo.process.ProcessInfo;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -17,5 +17,6 @@ public class HelloController {
         for (ProcessInfo processInfo : processes) {
             System.out.println(processInfo);
         }
+
     }
 }

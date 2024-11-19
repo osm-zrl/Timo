@@ -1,5 +1,7 @@
 package com.example.timo.process;
 
+import com.example.timo.Module.ProcessInfo;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;

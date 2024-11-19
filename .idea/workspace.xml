@@ -8,8 +8,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,8 +48,9 @@
     &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
     &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dbConnection&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -64,7 +66,7 @@
       <module name="Timo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.example.timo.process.*" />
+          <option name="PATTERN" value="com.example.timo.Module.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -77,7 +79,7 @@
       <module name="Timo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.example.timo.process.*" />
+          <option name="PATTERN" value="com.example.timo.Module.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -98,9 +100,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SQLiteConnection" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.timo.Module.SQLiteConnection" />
+      <module name="Timo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.timo.Module.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.HelloApplication" />
+        <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
@@ -131,10 +147,25 @@
       <workItem from="1731404317011" duration="327000" />
       <workItem from="1731421676476" duration="37000" />
       <workItem from="1731425243711" duration="1195000" />
+      <workItem from="1731427650670" duration="82000" />
+      <workItem from="1732002279919" duration="3835000" />
+      <workItem from="1732006508380" duration="6079000" />
+      <workItem from="1732028141716" duration="605000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
