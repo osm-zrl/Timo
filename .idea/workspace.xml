@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" afterDir="false" />
-    </list>
+    <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -131,6 +125,7 @@
       <workItem from="1731404317011" duration="327000" />
       <workItem from="1731421676476" duration="37000" />
       <workItem from="1731425243711" duration="1195000" />
+      <workItem from="1731427650670" duration="82000" />
     </task>
     <servers />
   </component>
