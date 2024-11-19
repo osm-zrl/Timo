@@ -11,11 +11,13 @@ public class HelloController {
 
     @FXML
     protected void onHelloButtonClick() {
-        ProcessInfo[] processes = FrontendProcessLister.getProcessList();
+        /*ProcessInfo[] processes = FrontendProcessLister.getProcessList();
 
         System.out.println("Liste des processus avec interface graphique :");
         for (ProcessInfo processInfo : processes) {
             System.out.println(processInfo);
-        }
+        }*/
+
+        System.out.println(HelloApplication.db);
     }
 }
