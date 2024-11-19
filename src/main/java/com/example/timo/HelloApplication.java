@@ -1,12 +1,25 @@
 package com.example.timo;
 
+<<<<<<< HEAD
+import com.example.timo.database.DatabaseConnection;
+import com.example.timo.process.FrontendProcessLister;
+import com.example.timo.process.ProcessInfo;
+=======
 import com.example.timo.Module.SQLiteConnection;
+>>>>>>> 7671974ac0c0f023fe0040c40ef20fa61c5ce1b2
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+<<<<<<< HEAD
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+=======
+>>>>>>> 7671974ac0c0f023fe0040c40ef20fa61c5ce1b2
 public class HelloApplication extends Application {
 
     public static SQLiteConnection db;
@@ -18,6 +31,8 @@ public class HelloApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+<<<<<<< HEAD
+=======
 
 
         //Background connection backend thread
@@ -48,9 +63,11 @@ public class HelloApplication extends Application {
         new Thread(dbConnectionTask).start();
 
 
+>>>>>>> 7671974ac0c0f023fe0040c40ef20fa61c5ce1b2
     }
 
     public static void main(String[] args) {
         launch();
+        DatabaseConnection.connect();
     }
 }
