@@ -5,13 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ApplicationHistory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,13 +60,13 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.SQLiteConnection">
+  <component name="RunManager" selected="Application.HelloApplication">
     <configuration name="FrontendProcessLister" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.process.FrontendProcessLister" />
       <module name="Timo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.example.timo.process.*" />
+          <option name="PATTERN" value="com.example.timo.Module.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -80,7 +79,7 @@
       <module name="Timo" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.example.timo.process.*" />
+          <option name="PATTERN" value="com.example.timo.Module.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -116,8 +115,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.HelloApplication" />
+        <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
@@ -150,11 +149,23 @@
       <workItem from="1731425243711" duration="1195000" />
       <workItem from="1731427650670" duration="82000" />
       <workItem from="1732002279919" duration="3835000" />
-      <workItem from="1732006508380" duration="4110000" />
+      <workItem from="1732006508380" duration="6079000" />
+      <workItem from="1732028141716" duration="605000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

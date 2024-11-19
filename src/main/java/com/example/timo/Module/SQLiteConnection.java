@@ -12,7 +12,7 @@ public class SQLiteConnection {
         try{
             SQLiteConnection module = new SQLiteConnection();
 
-            System.out.println(module.incrementDurationStoredApplication(2,10));
+            System.out.println(module.getStoredApplication(29));
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -45,7 +45,7 @@ public class SQLiteConnection {
         }
     }
 
-
+    //Get all stored applications ordered by date desc
     public List<ApplicationHistory> getStoredApplications() throws Exception{
         String sql = "SELECT * FROM Applications ORDER BY date DESC";
         List<ApplicationHistory> list = new ArrayList<>();
@@ -73,7 +73,7 @@ public class SQLiteConnection {
         return list;
     }
 
-
+    //increment stored app's duration by an amount
     public boolean incrementDurationStoredApplication(int id, int duration) throws Exception{
         String sql = "UPDATE Applications SET duration= duration+? WHERE id=?";
 
@@ -91,4 +91,21 @@ public class SQLiteConnection {
         }
 
     }
+
+    //Retrieve a single stored app
+    public ApplicationHistory getStoredApplication(int id) throws Exception{
+        String sql = "SELECT * FROM Applications WHERE id=?";
+
+        try (var stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new ApplicationHistory(id,rs.getString("name"),rs.getString("date"),rs.getInt("duration"));
+            }else{
+                return null;
+            }
+        }
+    }
+
+
 }

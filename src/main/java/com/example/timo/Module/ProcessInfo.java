@@ -1,4 +1,4 @@
-package com.example.timo.process;
+package com.example.timo.Module;
 
 import java.time.Duration;
 

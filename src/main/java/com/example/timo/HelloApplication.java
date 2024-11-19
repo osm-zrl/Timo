@@ -1,15 +1,11 @@
 package com.example.timo;
 
 import com.example.timo.Module.SQLiteConnection;
-import com.example.timo.process.FrontendProcessLister;
-import com.example.timo.process.ProcessInfo;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class HelloApplication extends Application {
 
