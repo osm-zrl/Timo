@@ -74,9 +74,9 @@ public class SQLiteConnection {
     }
 
     //Get all stored applications With a specific date
-    public List<ApplicationHistory> getDateSpecificStoredApplications(String dateInput) throws Exception{
+    public ArrayList<ApplicationHistory> getDateSpecificStoredApplications(String dateInput) throws Exception{
         String sql = "SELECT * FROM Applications WHERE date = '" + dateInput + "'";
-        List<ApplicationHistory> list = new ArrayList<>();
+        ArrayList<ApplicationHistory> list = new ArrayList<>();
 
         try (var stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {

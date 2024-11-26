@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class HelloApplication extends Application {
 
-    public static SQLiteConnection db;
+
     private ScheduledExecutorService scheduler;
     public ApplicationsController applicationsController;
 
@@ -27,38 +27,12 @@ public class HelloApplication extends Application {
         stage.show();
 
 
-        //Background connection backend thread
-        /*Task<Void> dbConnectionTask = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-
-
-            }
-
-            @Override
-            protected void succeeded() {
-                System.out.println("SQLite database initialized: connection success");
-            }
-
-            @Override
-            protected void failed() {
-                System.out.println("SQLite database failed to initialize: connection failed: ");
-            }
-        };
-        new Thread(dbConnectionTask).start();*/
-
         //Create Scheduler instance
         scheduler = Executors.newSingleThreadScheduledExecutor();
 
         Task<Void> initialiseApplications = new Task<Void>() {
             @Override
             protected Void call() throws Exception{
-                try {
-                    db = new SQLiteConnection();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    throw e;
-                }
                 applicationsController = new ApplicationsController();
 
 
@@ -82,11 +56,9 @@ public class HelloApplication extends Application {
     public void testScheduler(){
         System.out.println("scheduler executed");
     }
-
     public static void main(String[] args) {
         launch();
     }
-
     @Override
     public void stop() {
         scheduler.shutdown();

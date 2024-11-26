@@ -7,14 +7,14 @@ import java.time.Duration;
 
 @Getter
 public class ProcessInfo {
-    private String name;
-    private int pid;
-    private double memory;
-    private double cpu;
+    protected String name;
+    private final Integer pid;
+    protected double memory;
+    protected double cpu;
     protected Duration duration; // Changed from String to Duration
 
 
-    public ProcessInfo(String name, int pid, double memory, double cpu, Duration duration) {
+    public ProcessInfo(String name, Integer pid, double memory, double cpu, Duration duration) {
         this.name = name;
         this.pid = pid;
         this.memory = memory;
