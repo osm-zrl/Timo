@@ -7,7 +7,6 @@
     <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
@@ -60,7 +59,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.ApplicationsController">
+  <component name="RunManager" selected="Application.SQLiteConnection">
     <configuration name="ApplicationsController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.Controller.ApplicationsController" />
       <module name="Timo" />
@@ -128,9 +127,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ApplicationsController" />
         <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.HelloApplication" />
+        <item itemvalue="Application.ApplicationsController" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
@@ -168,7 +167,7 @@
       <workItem from="1732048841291" duration="2990000" />
       <workItem from="1732607907153" duration="4185000" />
       <workItem from="1732614531376" duration="2567000" />
-      <workItem from="1732630417226" duration="2827000" />
+      <workItem from="1732630417226" duration="5370000" />
     </task>
     <servers />
   </component>

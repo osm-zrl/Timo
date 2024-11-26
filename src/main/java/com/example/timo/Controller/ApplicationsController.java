@@ -63,26 +63,14 @@ public class ApplicationsController {
         });
     }
 
-    public void AddApplication(TrackedApplication application) {
-        ApplicationsList.add(application);
-    }
-    public void RemoveApplication(TrackedApplication application) {
-        ApplicationsList.remove(application);
-    }
-    public void StartMonitoring(ProcessInfo processInfo){
-         ApplicationsList.add(new TrackedApplication(processInfo));
-    }
-    public void StopMonitoring(TrackedApplication trackedApplication){
-        //
-    }
-    public boolean checkDurationLimit(TrackedApplication trackedApplication){
-        return trackedApplication.checkDurationLimit();
-    }
+    //Update Tracked Applications List
     public void updateProcesses(){
         //Getting the current running processes
-        ArrayList<ProcessInfo> currentProcessInfoList = FrontendProcessLister.getProcessList();
+        ArrayList<ProcessInfo> currentProcesses = FrontendProcessLister.getProcessList();
 
-
+        ApplicationsList.forEach((application)->{
+           //
+        });
 
     }
 

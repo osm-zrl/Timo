@@ -42,12 +42,12 @@ public class SQLiteConnection {
 
                 stmt.executeUpdate(createApplicationsTableSQL);
 
-                String createApplicationsLimitTableSQL = "CREATE TABLE IF NOT EXISTS ApplicationsLimit (" +
+                String createApplicationsUsageLimitTableSQL = "CREATE TABLE IF NOT EXISTS ApplicationsUsageLimit (" +
                     "id INTEGER PRIMARY KEY, " +
                     "name TEXT, " +
                     "usage_limit INTEGER NOT_NULL" +
                     ")";
-                stmt.executeUpdate(createApplicationsLimitTableSQL);
+                stmt.executeUpdate(createApplicationsUsageLimitTableSQL);
             }else {
                 System.out.println("Error: could not create table");
             }
@@ -149,7 +149,7 @@ public class SQLiteConnection {
 
     //ApplicationLimits table's methodes
     public void storeApplicationLimit(String name, int usage_limit) throws Exception {
-        String sql = "INSERT INTO ApplicationsLimit (name, usage_limit) VALUES (?, ?)";
+        String sql = "INSERT INTO ApplicationsUsageLimit (name, usage_limit) VALUES (?, ?)";
 
         try (var stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, name);
@@ -159,7 +159,7 @@ public class SQLiteConnection {
     }
 
     public int getStoredApplicationLimit(String name) throws Exception{
-        String sql = "SELECT usage_limit FROM ApplicationsLimit WHERE name=?";
+        String sql = "SELECT usage_limit FROM ApplicationsUsageLimit WHERE name=?";
 
         try (var stmt = conn.prepareStatement(sql)) {
             stmt.setString(1,name);
@@ -173,7 +173,7 @@ public class SQLiteConnection {
     }
 
     public void modifyApplicationLimit(String name, int usage_limit) throws Exception {
-        String sql = "UPDATE ApplicationsLimit SET usage_limit = ? WHERE name = ?";
+        String sql = "UPDATE ApplicationsUsageLimit SET usage_limit = ? WHERE name = ?";
 
         try (var stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, usage_limit);  // Set the new usage limit
