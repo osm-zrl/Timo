@@ -23,29 +23,27 @@ public class HelloApplication extends Application {
     public void start(Stage primaryStage) {
         // --- Menu vertical ---
         VBox navMenu = new VBox();
-        navMenu.setMinWidth(150); // Fixed width for navbar
-        navMenu.setStyle("-fx-background-color: #347877;");
+        navMenu.setMinWidth(150);
+        navMenu.setStyle("-fx-background-color: #34495E;");
 
         Button btnDashboard = new Button("Dashboard");
         Button btnTask = new Button("Task");
         Button btnSettings = new Button("Settings");
         Button btnProfile = new Button("Profile");
 
-        String buttonStyle = "-fx-background-color: #347877; -fx-text-fill: white; -fx-font-size: 14px; "
+        String buttonStyle = "-fx-background-color: #34495E; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
-        String buttonHoverStyle = "-fx-background-color: #1E4848; -fx-text-fill: white;";
+
+        // Hover style (using a lighter background color for visibility)
+        String buttonHoverStyle = "-fx-background-color: #5D6D7E; -fx-text-fill: white; -fx-font-size: 14px; "
+        + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
 
         // Apply styles
-        btnDashboard.setStyle(buttonStyle);
-        btnTask.setStyle(buttonStyle);
-        btnSettings.setStyle(buttonStyle);
-        btnProfile.setStyle(buttonStyle);
+        applyButtonHoverEffect(btnDashboard, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnTask, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnSettings, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnProfile, buttonStyle, buttonHoverStyle);
 
-        btnDashboard.setOnMouseEntered(e -> btnDashboard.setStyle(buttonHoverStyle));
-        btnDashboard.setOnMouseExited(e -> btnDashboard.setStyle(buttonStyle));
-        btnTask.setOnMouseExited(e -> btnTask.setStyle(buttonStyle));
-        btnSettings.setOnMouseExited(e -> btnSettings.setStyle(buttonStyle));
-        btnProfile.setOnMouseExited(e -> btnProfile.setStyle(buttonStyle));
 
         navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
         navMenu.setSpacing(15);
@@ -54,7 +52,7 @@ public class HelloApplication extends Application {
 
         // --- Main Content ---
         BorderPane mainContent = new BorderPane();
-        mainContent.setPadding(new Insets(10));
+        mainContent.setPadding(new Insets(80,40,50,40));
         mainContent.setCenter(createDashboard(primaryStage));
 
         // Button actions
@@ -74,11 +72,12 @@ public class HelloApplication extends Application {
                 navMenu.setVisible(false);
             } else {
                 navMenu.setPrefWidth(200);
-                navMenu.setVisible(true);
+                navMenu.setVisible(true); 
             }
         });
 
         Scene scene = new Scene(root, 1000, 600);
+
 
         primaryStage.setTitle(" TIMO");
         Image icon = new Image(getClass().getResourceAsStream("/Timo-1.jpg"));
@@ -97,18 +96,19 @@ public class HelloApplication extends Application {
                 new PieChart.Data("YouTube", 28)
         ));
         pieChart.setTitle("Application Time");
-        pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #33FF57;");
-        pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #3357FF;");
-        pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: red;");
+        pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #81C784;");
+        pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #64B5F6;");
+        pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #E57373;");
         pieChart.setLegendVisible(false);
 
-        // --- Bar Chart ---
+       // --- Bar Chart ---
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Usage (hours)");
 
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle("Weekly Usage");
+
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Last Week");
         series.getData().addAll(
@@ -123,6 +123,16 @@ public class HelloApplication extends Application {
 
         barChart.getData().add(series);
         barChart.setLegendVisible(false);
+
+        // Apply custom style classes to each bar
+        series.getData().forEach(data -> {
+            String styleClass = "bar-" + data.getXValue().toLowerCase();
+            data.getNode().getStyleClass().add(styleClass);
+        });
+
+        String barColor = "-fx-bar-fill: #80CBC4;"; // Green color
+        series.getData().forEach(data -> data.getNode().setStyle(barColor));
+
 
         // --- Table ---
         TableView<AppUsage> table = new TableView<>();
@@ -171,6 +181,13 @@ public class HelloApplication extends Application {
 
         return dashboard;
     }
+
+    private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
+        button.setStyle(normalStyle);
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle)); // Apply hover style
+        button.setOnMouseExited(e -> button.setStyle(normalStyle)); // Revert to normal style
+    }
+    
 
     private TableColumn<AppUsage, String> createTableColumn(String title, String property) {
         TableColumn<AppUsage, String> column = new TableColumn<>(title);
