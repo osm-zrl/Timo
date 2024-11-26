@@ -1,7 +1,0 @@
-/* style.css */
-
-/* Appliquer la couleur cyan à la première colonne */
-.first-column .table-cell {
-    -fx-background-color: cyan;
-    -fx-text-fill: black;
-}

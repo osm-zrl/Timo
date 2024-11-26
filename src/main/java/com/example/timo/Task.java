@@ -1,4 +1,4 @@
-package com.example.timo.view;
+package com.example.timo;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -10,67 +10,85 @@ import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.input.MouseEvent;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Dashboard extends Application {
+public class Task extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // --- Navigation Menu ---
+        // --- Menu vertical ---
         VBox navMenu = new VBox();
-        navMenu.setMinWidth(150);
-        navMenu.setStyle("-fx-background-color: #34495E;");
+        navMenu.setMinWidth(150); // Fixed width for navbar
+        navMenu.setStyle("-fx-background-color: #347877;");
 
         Button btnDashboard = new Button("Dashboard");
         Button btnTask = new Button("Task");
         Button btnSettings = new Button("Settings");
         Button btnProfile = new Button("Profile");
 
-        String buttonStyle = "-fx-background-color: #34495E; -fx-text-fill: white; -fx-font-size: 14px; "
+        String buttonStyle = "-fx-background-color: #347877; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
-        String buttonHoverStyle = "-fx-background-color: #5D6D7E; -fx-text-fill: white;";
+        String buttonHoverStyle = "-fx-background-color: #1E4848; -fx-text-fill: white;";
 
-        applyButtonHoverEffect(btnDashboard, buttonStyle, buttonHoverStyle);
-        applyButtonHoverEffect(btnTask, buttonStyle, buttonHoverStyle);
-        applyButtonHoverEffect(btnSettings, buttonStyle, buttonHoverStyle);
-        applyButtonHoverEffect(btnProfile, buttonStyle, buttonHoverStyle);
+        // Apply styles
+        btnDashboard.setStyle(buttonStyle);
+        btnTask.setStyle(buttonStyle);
+        btnSettings.setStyle(buttonStyle);
+        btnProfile.setStyle(buttonStyle);
+
+        btnDashboard.setOnMouseEntered(e -> btnDashboard.setStyle(buttonHoverStyle));
+        btnDashboard.setOnMouseExited(e -> btnDashboard.setStyle(buttonStyle));
+        btnTask.setOnMouseExited(e -> btnTask.setStyle(buttonStyle));
+        btnSettings.setOnMouseExited(e -> btnSettings.setStyle(buttonStyle));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle(buttonStyle));
 
         navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
-        navMenu.setSpacing(10);
+        navMenu.setSpacing(15);
         navMenu.setAlignment(Pos.TOP_CENTER);
         navMenu.setPadding(new Insets(20, 0, 0, 0));
 
         // --- Main Content ---
         BorderPane mainContent = new BorderPane();
         mainContent.setPadding(new Insets(10));
-        mainContent.setCenter(createDashboard());
+        mainContent.setCenter(createDashboard(primaryStage));
 
-        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard()));
+        // Button actions
+        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard(primaryStage)));
         btnTask.setOnAction(e -> mainContent.setCenter(new Label("Task Page")));
         btnSettings.setOnAction(e -> mainContent.setCenter(new Label("Settings Page")));
         btnProfile.setOnAction(e -> mainContent.setCenter(new Label("Profile Page")));
 
-        // --- Main Layout ---
+        // --- Main Container ---
         HBox root = new HBox(navMenu, mainContent);
-        HBox.setHgrow(mainContent, Priority.ALWAYS);
+        HBox.setHgrow(mainContent, Priority.ALWAYS); // Main content takes all available space
+
+        // --- Responsive NavMenu ---
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 400) {
+                navMenu.setPrefWidth(0);
+                navMenu.setVisible(false);
+            } else {
+                navMenu.setPrefWidth(200);
+                navMenu.setVisible(true);
+            }
+        });
 
         Scene scene = new Scene(root, 1000, 600);
 
-        // --- Primary Stage ---
-        primaryStage.setTitle("TIMO Dashboard");
+        primaryStage.setTitle(" TIMO");
+        Image icon = new Image(getClass().getResourceAsStream("/Timo-1.jpg"));
+        primaryStage.getIcons().add(icon);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
-        button.setStyle(normalStyle);
-        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
-        button.setOnMouseExited(e -> button.setStyle(normalStyle));
-    }
-
-    // --- Dashboard Layout ---
-    private VBox createDashboard() {
+    // --- Create Dashboard ---
+    private VBox createDashboard(Stage primaryStage) {
         // --- Pie Chart ---
         PieChart pieChart = new PieChart();
         pieChart.setData(FXCollections.observableArrayList(
@@ -79,6 +97,9 @@ public class Dashboard extends Application {
                 new PieChart.Data("YouTube", 28)
         ));
         pieChart.setTitle("Application Time");
+        pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #33FF57;");
+        pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #3357FF;");
+        pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: red;");
         pieChart.setLegendVisible(false);
 
         // --- Bar Chart ---
@@ -88,7 +109,6 @@ public class Dashboard extends Application {
 
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle("Weekly Usage");
-
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Last Week");
         series.getData().addAll(
@@ -109,7 +129,9 @@ public class Dashboard extends Application {
         ObservableList<AppUsage> data = FXCollections.observableArrayList(
                 new AppUsage("Google", "14 Feb 2024 12:30", "17 Feb 2024 12:30", "2h 03m", "2000MB", "12.5%", "90%"),
                 new AppUsage("VS Code", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "86.35%", "80%"),
-                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%")
+                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%"),
+                new AppUsage("Spotify", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "40%"),
+                new AppUsage("Instagram", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "12%")
         );
 
         table.setItems(data);
@@ -122,15 +144,30 @@ public class Dashboard extends Application {
                 createTableColumn("GPU", "gpu"),
                 createTableColumn("%", "percentage")
         );
+
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
+        table.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        table.getColumns().forEach(column -> {
+            column.setStyle("-fx-font-size: 14px; -fx-background-color: #f5f5f5;");
+        });
 
-        // --- Layout ---
-        HBox chartsContainer = new HBox(20, pieChart, barChart);
-        chartsContainer.setAlignment(Pos.CENTER);
 
-        VBox dashboard = new VBox(20, chartsContainer, table);
+        // --- Responsive Layout ---
+        VBox chartsBox = new VBox(20, pieChart, barChart);
+        VBox dashboard = new VBox(20, chartsBox, table);
         dashboard.setPadding(new Insets(20));
-        VBox.setVgrow(table, Priority.ALWAYS);
+
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 800) {
+                chartsBox.getChildren().clear();
+                chartsBox.getChildren().addAll(pieChart, barChart); // Vertical stack
+            } else {
+                chartsBox.getChildren().clear();
+                HBox horizontalChartsBox = new HBox(100, pieChart, barChart);
+                chartsBox.getChildren().add(horizontalChartsBox); // Horizontal stack
+            }
+        });
 
         return dashboard;
     }
