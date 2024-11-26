@@ -7,6 +7,7 @@ import com.example.timo.Module.SQLiteConnection;
 import com.example.timo.Module.TrackedApplication;
 import com.example.timo.process.FrontendProcessLister;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class ApplicationsController {
         System.out.println(context.ApplicationsList);
     }
 
+    //Constructor
     public ApplicationsController() throws Exception {
 
         //Getting Current Processes and converting them to TrackedApplications
@@ -42,18 +44,24 @@ public class ApplicationsController {
         String formattedDate = currentDate.format(formatter);
         ArrayList<ApplicationHistory> storedApplicationsFromToday = db.getDateSpecificStoredApplications(formattedDate);
 
-        //Setting TotalDuration for today's use of each Application from stored data
+        //Setting Limits and TotalDuration for today's use of each Application from stored data
         ApplicationsList.forEach((application)->{
+
             for(ApplicationHistory applicationHistory:storedApplicationsFromToday){
                 if(application.getName().equals(applicationHistory.getName())){
+                    application.setId(applicationHistory.getId());
                     application.setTotalDuration(applicationHistory.getDuration());
                     break;
                 }
             }
+
+            try {
+                application.setDurationLimit(Duration.ofSeconds(db.getStoredApplicationLimit(application.getName())));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
         });
     }
-
-
 
     public void AddApplication(TrackedApplication application) {
         ApplicationsList.add(application);

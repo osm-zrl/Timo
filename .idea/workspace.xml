@@ -8,9 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,24 +42,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.ApplicationsController.executor": "Run",
-    "Application.FrontendProcessLister.executor": "Run",
-    "Application.FrontendProcesses.executor": "Run",
-    "Application.HelloApplication.executor": "Run",
-    "Application.SQLiteConnection.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "backendProcess",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ApplicationsController.executor&quot;: &quot;Run&quot;,
+    &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
+    &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backendProcess&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.ApplicationsController">
     <configuration name="ApplicationsController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.Controller.ApplicationsController" />
@@ -130,8 +129,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.ApplicationsController" />
-        <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.SQLiteConnection" />
+        <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
@@ -169,6 +168,7 @@
       <workItem from="1732048841291" duration="2990000" />
       <workItem from="1732607907153" duration="4185000" />
       <workItem from="1732614531376" duration="2567000" />
+      <workItem from="1732630417226" duration="2827000" />
     </task>
     <servers />
   </component>

@@ -27,14 +27,13 @@ public class HelloApplication extends Application {
         stage.show();
 
 
-        //Create Scheduler instance
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-
+        //ApplicationsController initialization thread
         Task<Void> initialiseApplications = new Task<Void>() {
             @Override
             protected Void call() throws Exception{
                 applicationsController = new ApplicationsController();
 
+                System.out.println(applicationsController.ApplicationsList);
 
                 return null;
             }
@@ -49,6 +48,12 @@ public class HelloApplication extends Application {
                 System.out.println("Application failed to initialize");
             }
         };
+        Thread thread = new Thread(initialiseApplications);
+        thread.setDaemon(true);
+        thread.start();
+
+        //Create Scheduler instance
+        scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(this::testScheduler, 0, 5, TimeUnit.SECONDS);
 
     }
