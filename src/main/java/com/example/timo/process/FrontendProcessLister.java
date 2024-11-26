@@ -11,11 +11,11 @@ import java.util.List;
 
 public class FrontendProcessLister {
 
-    public static ProcessInfo[] getProcessList() {
+    public static ArrayList<ProcessInfo> getProcessList() {
         // PowerShell command to get process name, ID, memory (MB), CPU usage, and running duration (hh:mm:ss)
         String command = "powershell.exe -Command \"Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.Name -notin @('TextInputHost', 'ApplicationFrameHost') } | ForEach-Object { '{0},{1},{2:N2},{3:N2},{4}' -f $_.Name, $_.Id, ($_.WorkingSet64 / 1MB), $_.CPU, ((Get-Date) - $_.StartTime).ToString('hh\\:mm\\:ss') }\"";
 
-        List<ProcessInfo> processList = new ArrayList<>();
+        ArrayList<ProcessInfo> processList = new ArrayList<>();
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
@@ -55,6 +55,6 @@ public class FrontendProcessLister {
         }
 
         // Convert List to Array and return
-        return processList.toArray(new ProcessInfo[0]);
+        return processList;
     }
 }

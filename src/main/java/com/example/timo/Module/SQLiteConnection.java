@@ -12,7 +12,7 @@ public class SQLiteConnection {
         try{
             SQLiteConnection module = new SQLiteConnection();
 
-            System.out.println(module.getStoredApplication(29));
+            System.out.println(module.getDateSpecificStoredApplications("2024-11-26"));
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -48,6 +48,34 @@ public class SQLiteConnection {
     //Get all stored applications ordered by date desc
     public List<ApplicationHistory> getStoredApplications() throws Exception{
         String sql = "SELECT * FROM Applications ORDER BY date DESC";
+        List<ApplicationHistory> list = new ArrayList<>();
+
+        try (var stmt = conn.createStatement();
+             var rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int duration = rs.getInt("duration");
+                String date = rs.getString("date");
+
+                ApplicationHistory test = new ApplicationHistory(id,name,date,duration);
+                list.add(test);
+
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return list;
+    }
+
+    //Get all stored applications With a specific date
+    public List<ApplicationHistory> getDateSpecificStoredApplications(String dateInput) throws Exception{
+        String sql = "SELECT * FROM Applications WHERE date = '" + dateInput + "'";
         List<ApplicationHistory> list = new ArrayList<>();
 
         try (var stmt = conn.createStatement();

@@ -13,6 +13,7 @@ public class ProcessInfo {
     private double cpu;
     protected Duration duration; // Changed from String to Duration
 
+
     public ProcessInfo(String name, int pid, double memory, double cpu, Duration duration) {
         this.name = name;
         this.pid = pid;
