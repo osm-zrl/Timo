@@ -8,94 +8,102 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.input.MouseEvent;
 import javafx.beans.property.SimpleStringProperty;
 
-public class HelloApplication extends Application {
+public class Task extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // --- Scene 1 : Dashboard ---
+        // --- Menu vertical ---
         VBox navMenu = new VBox();
-        navMenu.setPrefWidth(200);
+        navMenu.setMinWidth(150); // Fixed width for navbar
         navMenu.setStyle("-fx-background-color: #347877;");
 
         Button btnDashboard = new Button("Dashboard");
         Button btnTask = new Button("Task");
-        Button btnToSecondScene = new Button("Go to Second Scene");
+        Button btnSettings = new Button("Settings");
+        Button btnProfile = new Button("Profile");
 
         String buttonStyle = "-fx-background-color: #347877; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
         String buttonHoverStyle = "-fx-background-color: #1E4848; -fx-text-fill: white;";
 
+        // Apply styles
         btnDashboard.setStyle(buttonStyle);
         btnTask.setStyle(buttonStyle);
-        btnToSecondScene.setStyle(buttonStyle);
+        btnSettings.setStyle(buttonStyle);
+        btnProfile.setStyle(buttonStyle);
 
         btnDashboard.setOnMouseEntered(e -> btnDashboard.setStyle(buttonHoverStyle));
         btnDashboard.setOnMouseExited(e -> btnDashboard.setStyle(buttonStyle));
-        btnTask.setOnMouseEntered(e -> btnTask.setStyle(buttonHoverStyle));
         btnTask.setOnMouseExited(e -> btnTask.setStyle(buttonStyle));
-        btnToSecondScene.setOnMouseEntered(e -> btnToSecondScene.setStyle(buttonHoverStyle));
-        btnToSecondScene.setOnMouseExited(e -> btnToSecondScene.setStyle(buttonStyle));
+        btnSettings.setOnMouseExited(e -> btnSettings.setStyle(buttonStyle));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle(buttonStyle));
 
-        navMenu.getChildren().addAll(btnDashboard, btnTask, btnToSecondScene);
-        navMenu.setSpacing(10);
+        navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
+        navMenu.setSpacing(15);
         navMenu.setAlignment(Pos.TOP_CENTER);
         navMenu.setPadding(new Insets(20, 0, 0, 0));
 
+        // --- Main Content ---
         BorderPane mainContent = new BorderPane();
         mainContent.setPadding(new Insets(10));
-        mainContent.setCenter(createDashboard());
+        mainContent.setCenter(createDashboard(primaryStage));
 
-        HBox root1 = new HBox(navMenu, mainContent);
-        Scene scene1 = new Scene(root1, 1000, 600);
+        // Button actions
+        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard(primaryStage)));
+        btnTask.setOnAction(e -> mainContent.setCenter(new Label("Task Page")));
+        btnSettings.setOnAction(e -> mainContent.setCenter(new Label("Settings Page")));
+        btnProfile.setOnAction(e -> mainContent.setCenter(new Label("Profile Page")));
 
-        // --- Scene 2 : Second Scene ---
+        // --- Main Container ---
+        HBox root = new HBox(navMenu, mainContent);
+        HBox.setHgrow(mainContent, Priority.ALWAYS); // Main content takes all available space
 
-        VBox secondSceneLayout = new VBox();
-        secondSceneLayout.setAlignment(Pos.CENTER);
-        secondSceneLayout.setSpacing(20);
-        secondSceneLayout.setPadding(new Insets(20));
+        // --- Responsive NavMenu ---
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 400) {
+                navMenu.setPrefWidth(0);
+                navMenu.setVisible(false);
+            } else {
+                navMenu.setPrefWidth(200);
+                navMenu.setVisible(true);
+            }
+        });
 
-        Label secondSceneLabel = new Label("This is the second scene");
-        secondSceneLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: #347877;");
-        Button btnBackToScene1 = new Button("Back to Dashboard");
-        btnBackToScene1.setStyle(buttonStyle);
+        Scene scene = new Scene(root, 1000, 600);
 
-        btnBackToScene1.setOnMouseEntered(e -> btnBackToScene1.setStyle(buttonHoverStyle));
-        btnBackToScene1.setOnMouseExited(e -> btnBackToScene1.setStyle(buttonStyle));
-
-        secondSceneLayout.getChildren().addAll(secondSceneLabel, btnBackToScene1);
-
-        Scene scene2 = new Scene(secondSceneLayout, 1000, 600);
-
-        // --- Scene Switching ---
-        btnToSecondScene.setOnAction(e -> primaryStage.setScene(scene2));
-        btnBackToScene1.setOnAction(e -> primaryStage.setScene(scene1));
-
-        // --- Initial Scene ---
-        primaryStage.setTitle("Dashboard Application");
-        primaryStage.setScene(scene1);
+        primaryStage.setTitle(" TIMO");
+        Image icon = new Image(getClass().getResourceAsStream("/Timo-1.jpg"));
+        primaryStage.getIcons().add(icon);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    // --- Création du tableau de bord ---
-    private VBox createDashboard() {
+    // --- Create Dashboard ---
+    private VBox createDashboard(Stage primaryStage) {
+        // --- Pie Chart ---
         PieChart pieChart = new PieChart();
         pieChart.setData(FXCollections.observableArrayList(
                 new PieChart.Data("Google", 40),
-                new PieChart.Data("VS Code", 32),
+                new PieChart.Data("VS Code", 42),
                 new PieChart.Data("YouTube", 28)
         ));
-
         pieChart.setTitle("Application Time");
-        pieChart.setPrefWidth(372);
-        pieChart.setPrefHeight(332);
+        pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #33FF57;");
+        pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #3357FF;");
+        pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: red;");
+        pieChart.setLegendVisible(false);
 
+        // --- Bar Chart ---
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("Days");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Usage (hours)");
 
@@ -112,19 +120,11 @@ public class HelloApplication extends Application {
                 new XYChart.Data<>("Sat", 4.5),
                 new XYChart.Data<>("Sun", 3)
         );
+
         barChart.getData().add(series);
+        barChart.setLegendVisible(false);
 
-        series.getData().forEach(data -> {
-            data.getNode().setStyle("-fx-bar-fill: #5A6ACF;");
-        });
-
-        barChart.setPrefWidth(684);
-        barChart.setPrefHeight(306);
-
-        HBox chartsContainer = new HBox(20, pieChart, barChart);
-        chartsContainer.setPadding(new Insets(20));
-        chartsContainer.setAlignment(Pos.CENTER);
-
+        // --- Table ---
         TableView<AppUsage> table = new TableView<>();
         ObservableList<AppUsage> data = FXCollections.observableArrayList(
                 new AppUsage("Google", "14 Feb 2024 12:30", "17 Feb 2024 12:30", "2h 03m", "2000MB", "12.5%", "90%"),
@@ -136,27 +136,45 @@ public class HelloApplication extends Application {
 
         table.setItems(data);
         table.getColumns().addAll(
-                createTableColumn("Title", "title", 200),
-                createTableColumn("Start Date", "startDate", 150),
-                createTableColumn("End Date", "endDate", 150),
-                createTableColumn("Duration", "duration", 100),
-                createTableColumn("Memory", "memory", 100),
-                createTableColumn("GPU", "gpu", 80),
-                createTableColumn("%", "percentage", 80)
+                createTableColumn("Title", "title"),
+                createTableColumn("Start Date", "startDate"),
+                createTableColumn("End Date", "endDate"),
+                createTableColumn("Duration", "duration"),
+                createTableColumn("Memory", "memory"),
+                createTableColumn("GPU", "gpu"),
+                createTableColumn("%", "percentage")
         );
 
-        VBox dashboard = new VBox(20, chartsContainer, table);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
+        table.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        table.getColumns().forEach(column -> {
+            column.setStyle("-fx-font-size: 14px; -fx-background-color: #f5f5f5;");
+        });
+
+
+        // --- Responsive Layout ---
+        VBox chartsBox = new VBox(20, pieChart, barChart);
+        VBox dashboard = new VBox(20, chartsBox, table);
         dashboard.setPadding(new Insets(20));
 
-        VBox.setVgrow(table, Priority.ALWAYS);
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 800) {
+                chartsBox.getChildren().clear();
+                chartsBox.getChildren().addAll(pieChart, barChart); // Vertical stack
+            } else {
+                chartsBox.getChildren().clear();
+                HBox horizontalChartsBox = new HBox(100, pieChart, barChart);
+                chartsBox.getChildren().add(horizontalChartsBox); // Horizontal stack
+            }
+        });
 
         return dashboard;
     }
 
-    private TableColumn<AppUsage, String> createTableColumn(String title, String property, double width) {
+    private TableColumn<AppUsage, String> createTableColumn(String title, String property) {
         TableColumn<AppUsage, String> column = new TableColumn<>(title);
         column.setCellValueFactory(cellData -> cellData.getValue().property(property));
-        column.setPrefWidth(width);
         return column;
     }
 
@@ -180,16 +198,16 @@ public class HelloApplication extends Application {
         }
 
         public SimpleStringProperty property(String name) {
-            switch (name) {
-                case "title": return title;
-                case "startDate": return startDate;
-                case "endDate": return endDate;
-                case "duration": return duration;
-                case "memory": return memory;
-                case "gpu": return gpu;
-                case "percentage": return percentage;
-                default: return null;
-            }
+            return switch (name) {
+                case "title" -> title;
+                case "startDate" -> startDate;
+                case "endDate" -> endDate;
+                case "duration" -> duration;
+                case "memory" -> memory;
+                case "gpu" -> gpu;
+                case "percentage" -> percentage;
+                default -> null;
+            };
         }
     }
 
