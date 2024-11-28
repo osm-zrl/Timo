@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Database/DatabaseConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/DatabaseModule.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,13 +61,26 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.SQLiteConnection">
+  <component name="RunManager" selected="Application.ApplicationsController">
     <configuration name="ApplicationsController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.Controller.ApplicationsController" />
       <module name="Timo" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.example.timo.Controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DatabaseModule" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.timo.Module.DatabaseModule" />
+      <module name="Timo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.timo.Module.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -112,24 +127,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SQLiteConnection" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.example.timo.Module.SQLiteConnection" />
-      <module name="Timo" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.example.timo.Module.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SQLiteConnection" />
-        <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.ApplicationsController" />
+        <item itemvalue="Application.DatabaseModule" />
+        <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
@@ -167,7 +169,10 @@
       <workItem from="1732048841291" duration="2990000" />
       <workItem from="1732607907153" duration="4185000" />
       <workItem from="1732614531376" duration="2567000" />
-      <workItem from="1732630417226" duration="5370000" />
+      <workItem from="1732630417226" duration="8636000" />
+      <workItem from="1732737181362" duration="242000" />
+      <workItem from="1732747008976" duration="4000" />
+      <workItem from="1732797471841" duration="3197000" />
     </task>
     <servers />
   </component>

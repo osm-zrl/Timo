@@ -1,9 +1,8 @@
 package com.example.timo.Controller;
 
-import com.example.timo.HelloApplication;
 import com.example.timo.Module.ApplicationHistory;
 import com.example.timo.Module.ProcessInfo;
-import com.example.timo.Module.SQLiteConnection;
+import com.example.timo.Module.DatabaseModule;
 import com.example.timo.Module.TrackedApplication;
 import com.example.timo.process.FrontendProcessLister;
 
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class ApplicationsController {
     public ArrayList<TrackedApplication> ApplicationsList = new ArrayList<>();
     public ArrayList<ProcessInfo> ProcessInfoList = new ArrayList<>();
-    private SQLiteConnection db;
+    private DatabaseModule dbModule;
 
     public static void main(String[] args) throws Exception {
         ApplicationsController context = new ApplicationsController();
@@ -33,7 +32,7 @@ public class ApplicationsController {
 
         //Initialize Database Model
         try{
-            db = new SQLiteConnection();
+            dbModule = new DatabaseModule();
         }catch(Exception e){
             System.err.println(e.getMessage());
         }
@@ -42,7 +41,7 @@ public class ApplicationsController {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = currentDate.format(formatter);
-        ArrayList<ApplicationHistory> storedApplicationsFromToday = db.getDateSpecificStoredApplications(formattedDate);
+        ArrayList<ApplicationHistory> storedApplicationsFromToday = dbModule.getDateSpecificStoredApplications(formattedDate);
 
         //Setting Limits and TotalDuration for today's use of each Application from stored data
         ApplicationsList.forEach((application)->{
@@ -56,7 +55,7 @@ public class ApplicationsController {
             }
 
             try {
-                application.setDurationLimit(Duration.ofSeconds(db.getStoredApplicationLimit(application.getName())));
+                application.setDurationLimit(Duration.ofSeconds(dbModule.getStoredApplicationLimit(application.getName())));
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             }

@@ -1,7 +1,6 @@
 package com.example.timo;
 
 import com.example.timo.Controller.ApplicationsController;
-import com.example.timo.Module.SQLiteConnection;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
