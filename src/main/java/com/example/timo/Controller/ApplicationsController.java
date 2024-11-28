@@ -49,7 +49,7 @@ public class ApplicationsController {
             for(ApplicationHistory applicationHistory:storedApplicationsFromToday){
                 if(application.getName().equals(applicationHistory.getName())){
                     application.setId(applicationHistory.getId());
-                    application.setTotalDuration(applicationHistory.getDuration());
+                    application.setTotalDuration(application.getDuration().plus(applicationHistory.getDuration()));
                     break;
                 }
             }
@@ -62,15 +62,53 @@ public class ApplicationsController {
         });
     }
 
+    //Killing TrackedApplications
+    public void KillTrackedApp(TrackedApplication trackedApplication){
+        System.out.println("Application with name " + trackedApplication.getName()+" Terminated");
+
+    }
+
     //Update Tracked Applications List
-    public void updateProcesses(){
+    public Runnable updateProcesses(){
         //Getting the current running processes
         ArrayList<ProcessInfo> currentProcesses = FrontendProcessLister.getProcessList();
 
+        //Updating Existing Tracked Applications
         ApplicationsList.forEach((application)->{
-           //
+            boolean applicationRunning = false;
+
+           for(ProcessInfo processInfo: currentProcesses){
+               if(application.getName().equals(processInfo.getName())){
+                   applicationRunning = true;
+
+                   //Clearing Existing Processes
+                   currentProcesses.remove(processInfo);
+
+                   //getting passed duration from last check
+                   Duration addedDuration = processInfo.getDuration().minus(application.getDuration());
+
+                   //Setting latest cpu and memory usage
+                   application.setCpu(processInfo.getCpu());
+                   application.setMemory(processInfo.getMemory());
+
+                   //updating total usage duration and duration
+                   application.addDuration(addedDuration);
+                   application.setDuration(processInfo.getDuration());
+
+                   if(application.checkDurationLimit()){
+                       System.out.println("Usage limit reached for "+application.getName());
+                   }
+
+                   break;
+               }
+           }
+
+           if(!applicationRunning){
+               KillTrackedApp(application);
+           }
         });
 
+        return null;
     }
 
 }

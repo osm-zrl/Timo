@@ -18,11 +18,13 @@ public class TrackedApplication extends ProcessInfo{
     public TrackedApplication(Integer id,String name, Integer pid, double memory, double cpu, Duration duration) {
         super(name, pid, memory, cpu, duration);
         this.id = id;
+        this.durationLimit = Duration.ZERO;
     }
 
     //Constructor with ProcessInfo class as param
     public TrackedApplication(ProcessInfo processInfo){
         this(null,processInfo.getName(), processInfo.getPid(), processInfo.getMemory(), processInfo.getCpu(), processInfo.getDuration());
+        this.totalDuration = Duration.ZERO;
     }
 
     //Constructor with ApplicationHistory Class as Param
@@ -34,13 +36,15 @@ public class TrackedApplication extends ProcessInfo{
 
     public void resetDuration(){this.duration = Duration.ZERO;}
 
-    public void addDuration(){
-        this.totalDuration = this.totalDuration.plus(duration);
-        this.resetDuration();
+    public void addDuration(Duration addedDuration){
+        this.totalDuration = this.totalDuration.plus(addedDuration);
     }
 
     public boolean checkDurationLimit(){
-        return this.totalDuration.compareTo(this.durationLimit) > 0;
+        if(this.durationLimit == Duration.ZERO){
+            return false;
+        }
+        return this.totalDuration.toSeconds()>this.durationLimit.toSeconds();
     }
 
     @Override

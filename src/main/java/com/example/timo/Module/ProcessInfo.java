@@ -1,6 +1,7 @@
 package com.example.timo.Module;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Duration;
 
@@ -9,8 +10,14 @@ import java.time.Duration;
 public class ProcessInfo {
     protected String name;
     private final Integer pid;
+
+    @Setter
     protected double memory;
+
+    @Setter
     protected double cpu;
+
+    @Setter
     protected Duration duration; // Changed from String to Duration
 
 

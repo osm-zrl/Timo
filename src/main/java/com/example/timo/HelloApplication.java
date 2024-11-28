@@ -32,14 +32,30 @@ public class HelloApplication extends Application {
             protected Void call() throws Exception{
                 applicationsController = new ApplicationsController();
 
-                System.out.println(applicationsController.ApplicationsList);
-
                 return null;
             }
 
             @Override
             protected void succeeded() {
                 System.out.println("Application initialized");
+                System.out.println(applicationsController.ApplicationsList);
+
+                // Create Scheduler instance
+                scheduler = Executors.newSingleThreadScheduledExecutor();
+                try {
+                    // Pass a Runnable to the scheduler
+                    scheduler.scheduleAtFixedRate(() -> {
+                        try {
+                            applicationsController.updateProcesses();
+                        } catch (Exception e) {
+                            System.err.println("Error updating processes: " + e.getMessage());
+                        }
+
+                        System.out.println(applicationsController.ApplicationsList);
+                    }, 0, 20, TimeUnit.SECONDS); // 0 delay, repeat every 10 seconds
+                } catch (Exception e) {
+                    System.err.println("Error scheduling task: " + e.getMessage());
+                }
             }
 
             @Override
@@ -51,15 +67,10 @@ public class HelloApplication extends Application {
         thread.setDaemon(true);
         thread.start();
 
-        //Create Scheduler instance
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(this::testScheduler, 0, 5, TimeUnit.SECONDS);
 
     }
 
-    public void testScheduler(){
-        System.out.println("scheduler executed");
-    }
+
     public static void main(String[] args) {
         launch();
     }
