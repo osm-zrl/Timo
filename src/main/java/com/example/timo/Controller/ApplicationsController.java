@@ -36,6 +36,7 @@ public class ApplicationsController {
             System.err.println(e.getMessage());
         }
 
+
         //Get stored Applications with today's date
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -137,7 +138,6 @@ public class ApplicationsController {
            }
         });
 
-
         //Removing killed trackedApplications and processes with TrackedApplication from arrays
         for(int index: trackedApplicationsToTerminateIndexes){
             ApplicationsList.remove(index);
@@ -147,12 +147,40 @@ public class ApplicationsController {
             currentProcesses.remove(index);
         }
 
-        //Handling App without processes
+        try{
+            startMonitoringApplications(currentProcesses);
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
+    public void startMonitoringApplications(ArrayList<ProcessInfo> processes) throws Exception{
+        for(ProcessInfo processInfo: processes){
+            TrackedApplication trackedApplication = new TrackedApplication(processInfo);
+
+            //Adding Usage Duration From Database(Today) if exists
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formattedDate = currentDate.format(formatter);
+
+            ApplicationHistory applicationHistory = dbModule.getDateSpecificStoredApplication(trackedApplication.getName(),formattedDate);
+
+            if(applicationHistory!=null){
+                trackedApplication.setId(applicationHistory.getId());
+                trackedApplication.addDuration(Duration.ofSeconds(applicationHistory.getDuration()));
+            }
+
+            //Getting Limit
+            trackedApplication.setDurationLimit(Duration.ofSeconds(dbModule.getStoredApplicationLimit(trackedApplication.getName())));
+
+            ApplicationsList.add(trackedApplication);
+        }
+    }
     //Viewed current trackedApplications with style
     public void ListTrackedApplication(){
         System.out.println("\n");
+        System.out.println("Current Tracked Applications:");
         System.out.printf("%-20s%-15s%-15s%-15s%-15s%-15s%-10s\n", "Name", "CPU", "Memory", "Duration", "Limit", "Total Duration", "ID");
 
         for(TrackedApplication trackedApplication: ApplicationsList){

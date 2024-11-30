@@ -7,12 +7,7 @@
     <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ApplicationHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ApplicationHistory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/DatabaseModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/DatabaseModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +170,7 @@
       <workItem from="1732737181362" duration="242000" />
       <workItem from="1732747008976" duration="4000" />
       <workItem from="1732797471841" duration="12466000" />
-      <workItem from="1732980611321" duration="3462000" />
+      <workItem from="1732980611321" duration="4648000" />
     </task>
     <servers />
   </component>
