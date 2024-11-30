@@ -7,9 +7,12 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FrontendProcessLister {
+
+    public static void main(String[] args){
+        System.out.println(getProcessList());
+    }
 
     public static ArrayList<ProcessInfo> getProcessList() {
         // PowerShell command to get process name, ID, memory (MB), CPU usage, and running duration (hh:mm:ss)

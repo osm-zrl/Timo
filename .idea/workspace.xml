@@ -8,8 +8,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ApplicationHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ApplicationHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/DatabaseModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/DatabaseModule.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/process/FrontendProcessLister.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,24 +45,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ApplicationsController.executor&quot;: &quot;Run&quot;,
-    &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
-    &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;backendProcess&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ApplicationsController.executor": "Run",
+    "Application.FrontendProcessLister.executor": "Run",
+    "Application.FrontendProcesses.executor": "Run",
+    "Application.HelloApplication.executor": "Debug",
+    "Application.SQLiteConnection.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "backendProcess",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Application.HelloApplication">
     <configuration name="ApplicationsController" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.Controller.ApplicationsController" />
@@ -131,8 +133,8 @@
       <list>
         <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.ApplicationsController" />
-        <item itemvalue="Application.DatabaseModule" />
         <item itemvalue="Application.FrontendProcessLister" />
+        <item itemvalue="Application.DatabaseModule" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
     </recent_temporary>
@@ -172,7 +174,8 @@
       <workItem from="1732630417226" duration="8636000" />
       <workItem from="1732737181362" duration="242000" />
       <workItem from="1732747008976" duration="4000" />
-      <workItem from="1732797471841" duration="6858000" />
+      <workItem from="1732797471841" duration="12466000" />
+      <workItem from="1732980611321" duration="3462000" />
     </task>
     <servers />
   </component>

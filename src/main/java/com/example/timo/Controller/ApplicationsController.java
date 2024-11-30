@@ -13,12 +13,11 @@ import java.util.ArrayList;
 
 public class ApplicationsController {
     public ArrayList<TrackedApplication> ApplicationsList = new ArrayList<>();
-    public ArrayList<ProcessInfo> ProcessInfoList = new ArrayList<>();
     private DatabaseModule dbModule;
 
     public static void main(String[] args) throws Exception {
         ApplicationsController context = new ApplicationsController();
-        System.out.println(context.ApplicationsList);
+        context.ListTrackedApplication();
     }
 
     //Constructor
@@ -49,7 +48,7 @@ public class ApplicationsController {
             for(ApplicationHistory applicationHistory:storedApplicationsFromToday){
                 if(application.getName().equals(applicationHistory.getName())){
                     application.setId(applicationHistory.getId());
-                    application.setTotalDuration(application.getDuration().plus(applicationHistory.getDuration()));
+                    application.setTotalDuration(application.getDuration().plus(Duration.ofSeconds(applicationHistory.getDuration())));
                     break;
                 }
             }
@@ -64,14 +63,43 @@ public class ApplicationsController {
 
     //Killing TrackedApplications
     public void KillTrackedApp(TrackedApplication trackedApplication){
+
+        if(trackedApplication.getId()!=null){
+            try {
+                dbModule.incrementDurationStoredApplication(trackedApplication.getId(), trackedApplication.getTotalDuration().toSeconds());
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }else{
+            // Get today's date
+            LocalDate today = LocalDate.now();
+
+            // Define the desired format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Format the date to 'yyyy-MM-dd' format
+            String formattedDate = today.format(formatter);
+
+            try {
+                dbModule.insertApplication(new ApplicationHistory(trackedApplication,formattedDate));
+            } catch (Exception e) {
+                System.err.println("error inserting new application in database while terminating TA "+e.getMessage());
+                throw new RuntimeException(e);
+            }
+
+        }
+
         System.out.println("Application with name " + trackedApplication.getName()+" Terminated");
 
     }
 
     //Update Tracked Applications List
-    public Runnable updateProcesses(){
+    public void updateProcesses(){
         //Getting the current running processes
         ArrayList<ProcessInfo> currentProcesses = FrontendProcessLister.getProcessList();
+        ArrayList<Integer> processesWithTrackedAppIndexes = new ArrayList<>();
+        ArrayList<Integer> trackedApplicationsToTerminateIndexes = new ArrayList<>();
 
         //Updating Existing Tracked Applications
         ApplicationsList.forEach((application)->{
@@ -81,8 +109,7 @@ public class ApplicationsController {
                if(application.getName().equals(processInfo.getName())){
                    applicationRunning = true;
 
-                   //Clearing Existing Processes
-                   currentProcesses.remove(processInfo);
+                   processesWithTrackedAppIndexes.add(currentProcesses.indexOf(processInfo));
 
                    //getting passed duration from last check
                    Duration addedDuration = processInfo.getDuration().minus(application.getDuration());
@@ -97,6 +124,7 @@ public class ApplicationsController {
 
                    if(application.checkDurationLimit()){
                        System.out.println("Usage limit reached for "+application.getName());
+                       //Handling User Alert
                    }
 
                    break;
@@ -105,10 +133,30 @@ public class ApplicationsController {
 
            if(!applicationRunning){
                KillTrackedApp(application);
+               trackedApplicationsToTerminateIndexes.add(ApplicationsList.indexOf(application));
            }
         });
 
-        return null;
+
+        //Removing killed trackedApplications and processes with TrackedApplication from arrays
+        for(int index: trackedApplicationsToTerminateIndexes){
+            ApplicationsList.remove(index);
+        }
+        for (int i = processesWithTrackedAppIndexes.size() - 1; i >= 0; i--) {
+            int index = processesWithTrackedAppIndexes.get(i);
+            currentProcesses.remove(index);
+        }
+
+        //Handling App without processes
     }
 
+    //Viewed current trackedApplications with style
+    public void ListTrackedApplication(){
+        System.out.println("\n");
+        System.out.printf("%-20s%-15s%-15s%-15s%-15s%-15s%-10s\n", "Name", "CPU", "Memory", "Duration", "Limit", "Total Duration", "ID");
+
+        for(TrackedApplication trackedApplication: ApplicationsList){
+            System.out.printf("%-20s%-15s%-15s%-15s%-15s%-15s%-10s\n", trackedApplication.getName(), trackedApplication.getCpu(), trackedApplication.getMemory(), trackedApplication.formatDuration(trackedApplication.getDuration()), trackedApplication.formatDuration(trackedApplication.getDurationLimit()), trackedApplication.formatDuration(trackedApplication.getTotalDuration()), trackedApplication.getId());
+        }
+    }
 }

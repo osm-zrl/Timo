@@ -38,7 +38,7 @@ public class HelloApplication extends Application {
             @Override
             protected void succeeded() {
                 System.out.println("Application initialized");
-                System.out.println(applicationsController.ApplicationsList);
+                applicationsController.ListTrackedApplication();
 
                 // Create Scheduler instance
                 scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -48,13 +48,15 @@ public class HelloApplication extends Application {
                         try {
                             applicationsController.updateProcesses();
                         } catch (Exception e) {
-                            System.err.println("Error updating processes: " + e.getMessage());
+                            System.err.println("Error updating processes: " + e);
+                            throw new RuntimeException(e);
                         }
 
-                        System.out.println(applicationsController.ApplicationsList);
+                        applicationsController.ListTrackedApplication();
                     }, 0, 20, TimeUnit.SECONDS); // 0 delay, repeat every 10 seconds
                 } catch (Exception e) {
                     System.err.println("Error scheduling task: " + e.getMessage());
+                    throw new RuntimeException(e);
                 }
             }
 
