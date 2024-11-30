@@ -29,9 +29,8 @@ public class HelloApplication extends Application {
         //ApplicationsController initialization thread
         Task<Void> initialiseApplications = new Task<Void>() {
             @Override
-            protected Void call() throws Exception{
+            protected Void call() throws Exception {
                 applicationsController = new ApplicationsController();
-
                 return null;
             }
 
@@ -40,24 +39,36 @@ public class HelloApplication extends Application {
                 System.out.println("Application initialized");
                 applicationsController.ListTrackedApplication();
 
-                // Create Scheduler instance
-                scheduler = Executors.newSingleThreadScheduledExecutor();
-                try {
-                    // Pass a Runnable to the scheduler
-                    scheduler.scheduleAtFixedRate(() -> {
+                // Loop to handle scheduler restart on errors
+                new Thread(() -> {
+                    while (true) {
                         try {
-                            applicationsController.updateProcesses();
-                        } catch (Exception e) {
-                            System.err.println("Error updating processes: " + e);
-                            throw new RuntimeException(e);
-                        }
+                            // Create Scheduler instance
+                            scheduler = Executors.newSingleThreadScheduledExecutor();
 
-                        applicationsController.ListTrackedApplication();
-                    }, 0, 20, TimeUnit.SECONDS); // 0 delay, repeat every 10 seconds
-                } catch (Exception e) {
-                    System.err.println("Error scheduling task: " + e.getMessage());
-                    throw new RuntimeException(e);
-                }
+                            // Pass a Runnable to the scheduler
+                            scheduler.scheduleAtFixedRate(() -> {
+                                try {
+                                    applicationsController.updateProcesses();
+                                } catch (Exception e) {
+                                    System.err.println("Error updating processes: " + e);
+                                    throw new RuntimeException(e); // Stops scheduler
+                                }
+
+                                applicationsController.ListTrackedApplication();
+                            }, 0, 20, TimeUnit.SECONDS); // 0 delay, repeat every 20 seconds
+
+                            // Break loop if scheduling is successful
+                            break;
+
+                        } catch (Exception e) {
+                            System.err.println("Error scheduling task: " + e.getMessage());
+                            try {
+                                Thread.sleep(1000); // Wait a second before retrying
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+                }).start();
             }
 
             @Override
@@ -65,9 +76,11 @@ public class HelloApplication extends Application {
                 System.out.println("Application failed to initialize");
             }
         };
+
         Thread thread = new Thread(initialiseApplications);
         thread.setDaemon(true);
         thread.start();
+
 
 
     }

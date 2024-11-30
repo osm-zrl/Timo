@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ApplicationsController {
     public ArrayList<TrackedApplication> ApplicationsList = new ArrayList<>();
@@ -96,64 +97,63 @@ public class ApplicationsController {
     }
 
     //Update Tracked Applications List
-    public void updateProcesses(){
-        //Getting the current running processes
+    public void updateProcesses() {
         ArrayList<ProcessInfo> currentProcesses = FrontendProcessLister.getProcessList();
         ArrayList<Integer> processesWithTrackedAppIndexes = new ArrayList<>();
-        ArrayList<Integer> trackedApplicationsToTerminateIndexes = new ArrayList<>();
+        ArrayList<TrackedApplication> trackedApplicationsToTerminate = new ArrayList<>();
 
-        //Updating Existing Tracked Applications
-        ApplicationsList.forEach((application)->{
+        // Updating existing Tracked Applications
+        ApplicationsList.forEach(application -> {
             boolean applicationRunning = false;
 
-           for(ProcessInfo processInfo: currentProcesses){
-               if(application.getName().equals(processInfo.getName())){
-                   applicationRunning = true;
+            for (ProcessInfo processInfo : currentProcesses) {
+                if (application.getName().equals(processInfo.getName())) {
+                    applicationRunning = true;
+                    processesWithTrackedAppIndexes.add(currentProcesses.indexOf(processInfo));
 
-                   processesWithTrackedAppIndexes.add(currentProcesses.indexOf(processInfo));
+                    // Getting passed duration from last check
+                    Duration addedDuration = processInfo.getDuration().minus(application.getDuration());
 
-                   //getting passed duration from last check
-                   Duration addedDuration = processInfo.getDuration().minus(application.getDuration());
+                    // Updating properties
+                    application.setCpu(processInfo.getCpu());
+                    application.setMemory(processInfo.getMemory());
+                    application.addDuration(addedDuration);
+                    application.setDuration(processInfo.getDuration());
 
-                   //Setting latest cpu and memory usage
-                   application.setCpu(processInfo.getCpu());
-                   application.setMemory(processInfo.getMemory());
+                    if (application.checkDurationLimit()) {
+                        System.out.println("Usage limit reached for " + application.getName());
+                        // Handle user alert here if needed
+                    }
 
-                   //updating total usage duration and duration
-                   application.addDuration(addedDuration);
-                   application.setDuration(processInfo.getDuration());
+                    break;
+                }
+            }
 
-                   if(application.checkDurationLimit()){
-                       System.out.println("Usage limit reached for "+application.getName());
-                       //Handling User Alert
-                   }
-
-                   break;
-               }
-           }
-
-           if(!applicationRunning){
-               KillTrackedApp(application);
-               trackedApplicationsToTerminateIndexes.add(ApplicationsList.indexOf(application));
-           }
+            if (!applicationRunning) {
+                trackedApplicationsToTerminate.add(application);
+            }
         });
 
-        //Removing killed trackedApplications and processes with TrackedApplication from arrays
-        for(int index: trackedApplicationsToTerminateIndexes){
-            ApplicationsList.remove(index);
-        }
-        for (int i = processesWithTrackedAppIndexes.size() - 1; i >= 0; i--) {
-            int index = processesWithTrackedAppIndexes.get(i);
-            currentProcesses.remove(index);
+        // Removing terminated trackedApplications
+        ApplicationsList.removeAll(trackedApplicationsToTerminate);
+
+        // Removing processed items from currentProcesses
+        ArrayList<ProcessInfo> remainingProcesses = new ArrayList<>();
+        for (int i = 0; i < currentProcesses.size(); i++) {
+            if (!processesWithTrackedAppIndexes.contains(i)) {
+                remainingProcesses.add(currentProcesses.get(i));
+            }
         }
 
-        try{
-            startMonitoringApplications(currentProcesses);
-        }catch(Exception e){
+        // Starting monitoring for the remaining processes
+        try {
+            startMonitoringApplications(remainingProcesses);
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             throw new RuntimeException(e);
         }
     }
+
 
     public void startMonitoringApplications(ArrayList<ProcessInfo> processes) throws Exception{
         for(ProcessInfo processInfo: processes){
