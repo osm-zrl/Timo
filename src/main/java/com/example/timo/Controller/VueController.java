@@ -12,13 +12,12 @@ public class VueController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() {
+    public void onHelloButtonClick() {  // Changed to public
         ArrayList<ProcessInfo> processes = FrontendProcessLister.getProcessList();
 
         System.out.println("Liste des processus avec interface graphique :");
         for (ProcessInfo processInfo : processes) {
             System.out.println(processInfo);
         }
-
     }
 }
