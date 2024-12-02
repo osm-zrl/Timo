@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 
 public class VueController {
     @FXML
-    private Label welcomeText;
+    protected Label welcomeText;
 
     @FXML
     protected void onHelloButtonClick() {
