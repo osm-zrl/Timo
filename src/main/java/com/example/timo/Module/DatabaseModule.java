@@ -102,13 +102,44 @@ public class DatabaseModule {
         return list;
     }
 
-    // Increment stored application's duration by an amount
-    public boolean incrementDurationStoredApplication(int id, int duration) throws Exception {
-        String sql = "UPDATE Applications SET duration = duration + ? WHERE id = ?";
+    //Get specifc record of application of specific date
+    public ApplicationHistory getDateSpecificStoredApplication(String name, String dateInput) throws Exception {
+        String sql = "SELECT * FROM Applications WHERE name = ? AND date = ?";
+        ApplicationHistory app = null;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, duration);
+
+            // Set the parameters for the prepared statement
+            stmt.setString(1, name);
+            stmt.setString(2, dateInput);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Retrieve data from the result set
+                    int id = rs.getInt("id");
+                    String appName = rs.getString("name");
+                    int duration = rs.getInt("duration");
+                    String date = rs.getString("date");
+
+                    // Create a new ApplicationHistory object
+                    app = new ApplicationHistory(id, appName, date, duration);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return app;
+    }
+
+    // Increment stored application's duration by an amount
+    public boolean incrementDurationStoredApplication(int id, long duration) throws Exception {
+        String sql = "UPDATE Applications SET duration = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1,(int)duration);
             stmt.setInt(2, id);
 
             int rowsUpdated = stmt.executeUpdate();
@@ -134,6 +165,28 @@ public class DatabaseModule {
                     return null;
                 }
             }
+        }
+    }
+
+    //Store new ApplicationHistory in database
+    public void insertApplication(ApplicationHistory applicationHistory) throws SQLException {
+        // SQL query to insert a new row into the Applications table
+        String sql = "INSERT INTO Applications (name, duration, date) VALUES (?, ?, ?)";
+
+        // Establish the database connection and execute the insert query
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set the values for the placeholder parameters
+            pstmt.setString(1, applicationHistory.getName());  // Set application name
+            pstmt.setInt(2, applicationHistory.getDuration());  // Set duration
+            pstmt.setString(3, applicationHistory.getDate());   // Set date (formatted as 'YYYY-MM-DD')
+
+            // Execute the update (insert)
+            pstmt.executeUpdate();
+            System.out.println("Application inserted successfully!");
+        } catch (SQLException e) {
+            System.err.println("Error inserting application: " + e.getMessage());
         }
     }
 

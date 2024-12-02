@@ -8,8 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/ProcessInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/TrackedApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -48,7 +46,7 @@
     &quot;Application.ApplicationsController.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.HelloApplication.executor&quot;: &quot;Debug&quot;,
     &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;backendProcess&quot;,
@@ -131,8 +129,8 @@
       <list>
         <item itemvalue="Application.HelloApplication" />
         <item itemvalue="Application.ApplicationsController" />
-        <item itemvalue="Application.DatabaseModule" />
         <item itemvalue="Application.FrontendProcessLister" />
+        <item itemvalue="Application.DatabaseModule" />
         <item itemvalue="Application.FrontendProcesses" />
       </list>
     </recent_temporary>
@@ -172,7 +170,8 @@
       <workItem from="1732630417226" duration="8636000" />
       <workItem from="1732737181362" duration="242000" />
       <workItem from="1732747008976" duration="4000" />
-      <workItem from="1732797471841" duration="6858000" />
+      <workItem from="1732797471841" duration="12466000" />
+      <workItem from="1732980611321" duration="4648000" />
     </task>
     <servers />
   </component>
