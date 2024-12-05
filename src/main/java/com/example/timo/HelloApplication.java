@@ -56,7 +56,7 @@ public class HelloApplication extends Application {
                                 }
 
                                 applicationsController.ListTrackedApplication();
-                            }, 0, 20, TimeUnit.SECONDS); // 0 delay, repeat every 20 seconds
+                            }, 0, 10, TimeUnit.SECONDS); // 0 delay, repeat every 20 seconds
 
                             // Break loop if scheduling is successful
                             break;

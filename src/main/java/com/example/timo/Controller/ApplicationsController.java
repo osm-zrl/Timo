@@ -131,8 +131,10 @@ public class ApplicationsController {
 
             if (!applicationRunning) {
                 trackedApplicationsToTerminate.add(application);
+                KillTrackedApp(application);
             }
         });
+
 
         // Removing terminated trackedApplications
         ApplicationsList.removeAll(trackedApplicationsToTerminate);

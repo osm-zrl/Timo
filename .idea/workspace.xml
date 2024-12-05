@@ -46,7 +46,7 @@
     &quot;Application.ApplicationsController.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
-    &quot;Application.HelloApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
     &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;backendProcess&quot;,
@@ -172,6 +172,7 @@
       <workItem from="1732747008976" duration="4000" />
       <workItem from="1732797471841" duration="12466000" />
       <workItem from="1732980611321" duration="4648000" />
+      <workItem from="1733401801742" duration="297000" />
     </task>
     <servers />
   </component>
