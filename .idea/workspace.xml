@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="" />
-=======
     <list default="true" id="53ce29f0-b8e2-4402-8004-edc2d00ce92c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/Timo-1.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/HelloApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/timo/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/timo/hello-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Controller/ApplicationsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/timo/Module/SQLiteConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/timo.db" beforeDir="false" afterPath="$PROJECT_DIR$/timo.db" afterDir="false" />
     </list>
->>>>>>> ui
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,13 +37,14 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.ApplicationsController.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcessLister.executor&quot;: &quot;Run&quot;,
     &quot;Application.FrontendProcesses.executor&quot;: &quot;Run&quot;,
     &quot;Application.HelloApplication.executor&quot;: &quot;Run&quot;,
 <<<<<<< HEAD
     &quot;Application.SQLiteConnection.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backendProcess&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
 =======
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -73,7 +70,6 @@
   }
 }</component>
   <component name="RunManager" selected="Application.HelloApplication">
-<<<<<<< HEAD
     <configuration name="FrontendProcessLister" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.timo.process.FrontendProcessLister" />
 =======
@@ -165,8 +161,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.HelloApplication" />
-<<<<<<< HEAD
         <item itemvalue="Application.SQLiteConnection" />
         <item itemvalue="Application.FrontendProcessLister" />
         <item itemvalue="Application.FrontendProcesses" />
@@ -210,24 +206,6 @@
       <workItem from="1732006508380" duration="6079000" />
       <workItem from="1732028141716" duration="605000" />
       <workItem from="1732048841291" duration="2990000" />
-=======
-      <workItem from="1731010540285" duration="4000" />
-      <workItem from="1731165290450" duration="1171000" />
-      <workItem from="1731245588863" duration="3107000" />
-      <workItem from="1731248908590" duration="543000" />
-      <workItem from="1731311144035" duration="42000" />
-      <workItem from="1731403537028" duration="384000" />
-      <workItem from="1731410311316" duration="1262000" />
-      <workItem from="1731426627211" duration="120000" />
-      <workItem from="1732002334372" duration="4813000" />
-      <workItem from="1732112850224" duration="168000" />
-      <workItem from="1732268199491" duration="289000" />
-      <workItem from="1732607380867" duration="1827000" />
-      <workItem from="1732609229775" duration="2195000" />
-      <workItem from="1732612444205" duration="2092000" />
-      <workItem from="1732630112074" duration="1459000" />
-      <workItem from="1732632017737" duration="158000" />
->>>>>>> ui
     </task>
     <servers />
   </component>

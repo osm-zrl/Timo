@@ -7,11 +7,7 @@ module com.example.timo {
 
     opens com.example.timo to javafx.fxml;
     exports com.example.timo;
-<<<<<<< HEAD
     exports com.example.timo.Controller;
     opens com.example.timo.Controller to javafx.fxml;
-}
-=======
     exports com.example.timo.view to javafx.graphics;
 }
->>>>>>> ui

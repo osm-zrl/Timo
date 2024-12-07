@@ -12,7 +12,10 @@ public class SQLiteConnection {
         try{
             SQLiteConnection module = new SQLiteConnection();
 
-            System.out.println(module.getStoredApplication(29));
+            module.storeApplicationLimit("opera",300);
+            System.out.println(module.getStoredApplicationLimit("chrome"));
+            module.modifyApplicationLimit("chrome", 600);
+            System.out.println(module.getStoredApplicationLimit("chrome"));
 
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -30,13 +33,21 @@ public class SQLiteConnection {
             if (conn != null) {
                 // Create a Statement object to execute queries
                 Statement stmt = conn.createStatement();
-                String createTableSQL = "CREATE TABLE IF NOT EXISTS Applications (" +
+                String createApplicationsTableSQL = "CREATE TABLE IF NOT EXISTS Applications (" +
                     "id INTEGER PRIMARY KEY, " +
                     "name TEXT, " +
                     "duration INTEGER, " +
                     "date TEXT CHECK (date = strftime('%Y-%m-%d', date))" +
                     ")";
-                stmt.executeUpdate(createTableSQL);
+
+                stmt.executeUpdate(createApplicationsTableSQL);
+
+                String createApplicationsUsageLimitTableSQL = "CREATE TABLE IF NOT EXISTS ApplicationsUsageLimit (" +
+                    "id INTEGER PRIMARY KEY, " +
+                    "name TEXT, " +
+                    "usage_limit INTEGER NOT_NULL" +
+                    ")";
+                stmt.executeUpdate(createApplicationsUsageLimitTableSQL);
             }else {
                 System.out.println("Error: could not create table");
             }
@@ -49,6 +60,34 @@ public class SQLiteConnection {
     public List<ApplicationHistory> getStoredApplications() throws Exception{
         String sql = "SELECT * FROM Applications ORDER BY date DESC";
         List<ApplicationHistory> list = new ArrayList<>();
+
+        try (var stmt = conn.createStatement();
+             var rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int duration = rs.getInt("duration");
+                String date = rs.getString("date");
+
+                ApplicationHistory test = new ApplicationHistory(id,name,date,duration);
+                list.add(test);
+
+            }
+
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return list;
+    }
+
+    //Get all stored applications With a specific date
+    public ArrayList<ApplicationHistory> getDateSpecificStoredApplications(String dateInput) throws Exception{
+        String sql = "SELECT * FROM Applications WHERE date = '" + dateInput + "'";
+        ArrayList<ApplicationHistory> list = new ArrayList<>();
 
         try (var stmt = conn.createStatement();
              var rs = stmt.executeQuery(sql)) {
@@ -108,4 +147,42 @@ public class SQLiteConnection {
     }
 
 
+    //ApplicationLimits table's methodes
+    public void storeApplicationLimit(String name, int usage_limit) throws Exception {
+        String sql = "INSERT INTO ApplicationsUsageLimit (name, usage_limit) VALUES (?, ?)";
+
+        try (var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setInt(2, usage_limit);
+            stmt.executeUpdate();
+        }
+    }
+
+    public int getStoredApplicationLimit(String name) throws Exception{
+        String sql = "SELECT usage_limit FROM ApplicationsUsageLimit WHERE name=?";
+
+        try (var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("usage_limit");
+            }else{
+                return 0;
+            }
+        }
+    }
+
+    public void modifyApplicationLimit(String name, int usage_limit) throws Exception {
+        String sql = "UPDATE ApplicationsUsageLimit SET usage_limit = ? WHERE name = ?";
+
+        try (var stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, usage_limit);  // Set the new usage limit
+            stmt.setString(2, name);      // Set the name to match
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new Exception("No application limit found with the name: " + name);
+            }
+        }
+    }
 }

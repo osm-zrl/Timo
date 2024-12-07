@@ -17,7 +17,7 @@ public class Dashboard extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // --- Navigation Menu ---
+        // --- Menu vertical ---
         VBox navMenu = new VBox();
         navMenu.setMinWidth(150);
         navMenu.setStyle("-fx-background-color: #34495E;");
@@ -29,48 +29,61 @@ public class Dashboard extends Application {
 
         String buttonStyle = "-fx-background-color: #34495E; -fx-text-fill: white; -fx-font-size: 14px; "
                 + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
-        String buttonHoverStyle = "-fx-background-color: #5D6D7E; -fx-text-fill: white;";
 
+        // Hover style (using a lighter background color for visibility)
+        String buttonHoverStyle = "-fx-background-color: #5D6D7E; -fx-text-fill: white; -fx-font-size: 14px; "
+        + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
+
+        // Apply styles
         applyButtonHoverEffect(btnDashboard, buttonStyle, buttonHoverStyle);
         applyButtonHoverEffect(btnTask, buttonStyle, buttonHoverStyle);
         applyButtonHoverEffect(btnSettings, buttonStyle, buttonHoverStyle);
         applyButtonHoverEffect(btnProfile, buttonStyle, buttonHoverStyle);
 
+
         navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
-        navMenu.setSpacing(10);
+        navMenu.setSpacing(15);
         navMenu.setAlignment(Pos.TOP_CENTER);
         navMenu.setPadding(new Insets(20, 0, 0, 0));
 
         // --- Main Content ---
         BorderPane mainContent = new BorderPane();
-        mainContent.setPadding(new Insets(10));
-        mainContent.setCenter(createDashboard());
+        mainContent.setPadding(new Insets(80,40,50,40));
+        mainContent.setCenter(createDashboard(primaryStage));
 
-        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard()));
+        // Button actions
+        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard(primaryStage)));
         btnTask.setOnAction(e -> mainContent.setCenter(new Label("Task Page")));
         btnSettings.setOnAction(e -> mainContent.setCenter(new Label("Settings Page")));
         btnProfile.setOnAction(e -> mainContent.setCenter(new Label("Profile Page")));
 
-        // --- Main Layout ---
+        // --- Main Container ---
         HBox root = new HBox(navMenu, mainContent);
         HBox.setHgrow(mainContent, Priority.ALWAYS);
 
+        // --- Responsive NavMenu ---
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 400) {
+                navMenu.setPrefWidth(0);
+                navMenu.setVisible(false);
+            } else {
+                navMenu.setPrefWidth(200);
+                navMenu.setVisible(true); 
+            }
+        });
+
         Scene scene = new Scene(root, 1000, 600);
 
-        // --- Primary Stage ---
-        primaryStage.setTitle("TIMO Dashboard");
+
+        primaryStage.setTitle(" TIMO");
+        Image icon = new Image(getClass().getResourceAsStream("/Timo-1.jpg"));
+        primaryStage.getIcons().add(icon);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
-        button.setStyle(normalStyle);
-        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
-        button.setOnMouseExited(e -> button.setStyle(normalStyle));
-    }
-
-    // --- Dashboard Layout ---
-    private VBox createDashboard() {
+    // --- Create Dashboard ---
+    private VBox createDashboard(Stage primaryStage) {
         // --- Pie Chart ---
         PieChart pieChart = new PieChart();
         pieChart.setData(FXCollections.observableArrayList(
@@ -79,9 +92,12 @@ public class Dashboard extends Application {
                 new PieChart.Data("YouTube", 28)
         ));
         pieChart.setTitle("Application Time");
+        pieChart.getData().get(0).getNode().setStyle("-fx-pie-color: #81C784;");
+        pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #64B5F6;");
+        pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #E57373;");
         pieChart.setLegendVisible(false);
 
-        // --- Bar Chart ---
+       // --- Bar Chart ---
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Usage (hours)");
@@ -104,12 +120,24 @@ public class Dashboard extends Application {
         barChart.getData().add(series);
         barChart.setLegendVisible(false);
 
+        // Apply custom style classes to each bar
+        series.getData().forEach(data -> {
+            String styleClass = "bar-" + data.getXValue().toLowerCase();
+            data.getNode().getStyleClass().add(styleClass);
+        });
+
+        String barColor = "-fx-bar-fill: #80CBC4;"; // Green color
+        series.getData().forEach(data -> data.getNode().setStyle(barColor));
+
+
         // --- Table ---
         TableView<AppUsage> table = new TableView<>();
         ObservableList<AppUsage> data = FXCollections.observableArrayList(
                 new AppUsage("Google", "14 Feb 2024 12:30", "17 Feb 2024 12:30", "2h 03m", "2000MB", "12.5%", "90%"),
                 new AppUsage("VS Code", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "86.35%", "80%"),
-                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%")
+                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%"),
+                new AppUsage("Spotify", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "40%"),
+                new AppUsage("Instagram", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "12%")
         );
 
         table.setItems(data);
@@ -122,18 +150,40 @@ public class Dashboard extends Application {
                 createTableColumn("GPU", "gpu"),
                 createTableColumn("%", "percentage")
         );
+
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
+        table.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        table.getColumns().forEach(column -> {
+            column.setStyle("-fx-font-size: 14px; -fx-background-color: #f5f5f5;");
+        });
 
-        // --- Layout ---
-        HBox chartsContainer = new HBox(20, pieChart, barChart);
-        chartsContainer.setAlignment(Pos.CENTER);
 
-        VBox dashboard = new VBox(20, chartsContainer, table);
+        // --- Responsive Layout ---
+        VBox chartsBox = new VBox(20, pieChart, barChart);
+        VBox dashboard = new VBox(20, chartsBox, table);
         dashboard.setPadding(new Insets(20));
-        VBox.setVgrow(table, Priority.ALWAYS);
+
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() < 800) {
+                chartsBox.getChildren().clear();
+                chartsBox.getChildren().addAll(pieChart, barChart); // Vertical stack
+            } else {
+                chartsBox.getChildren().clear();
+                HBox horizontalChartsBox = new HBox(100, pieChart, barChart);
+                chartsBox.getChildren().add(horizontalChartsBox); // Horizontal stack
+            }
+        });
 
         return dashboard;
     }
+
+    private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
+        button.setStyle(normalStyle);
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle)); // Apply hover style
+        button.setOnMouseExited(e -> button.setStyle(normalStyle)); // Revert to normal style
+    }
+    
 
     private TableColumn<AppUsage, String> createTableColumn(String title, String property) {
         TableColumn<AppUsage, String> column = new TableColumn<>(title);

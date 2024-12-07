@@ -1,15 +1,22 @@
 package com.example.timo;
 
+import com.example.timo.Controller.ApplicationsController;
 import com.example.timo.Module.SQLiteConnection;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 
 public class HelloApplication extends Application {
 
-    public static SQLiteConnection db;
+
+    private ScheduledExecutorService scheduler;
+    public ApplicationsController applicationsController;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -20,37 +27,45 @@ public class HelloApplication extends Application {
         stage.show();
 
 
-        //Background connection backend thread
-        Task<Void> dbConnectionTask = new Task<Void>() {
+        //ApplicationsController initialization thread
+        Task<Void> initialiseApplications = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() throws Exception{
+                applicationsController = new ApplicationsController();
 
-                try {
-                    db = new SQLiteConnection();
+                System.out.println(applicationsController.ApplicationsList);
 
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    throw e;
-                }
                 return null;
             }
 
             @Override
             protected void succeeded() {
-                System.out.println("SQLite database initialized: connection success");
+                System.out.println("Application initialized");
             }
 
             @Override
             protected void failed() {
-                System.out.println("SQLite database failed to initialize: connection failed: ");
+                System.out.println("Application failed to initialize");
             }
         };
-        new Thread(dbConnectionTask).start();
+        Thread thread = new Thread(initialiseApplications);
+        thread.setDaemon(true);
+        thread.start();
 
+        //Create Scheduler instance
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(this::testScheduler, 0, 5, TimeUnit.SECONDS);
 
     }
 
+    public void testScheduler(){
+        System.out.println("scheduler executed");
+    }
     public static void main(String[] args) {
         launch();
+    }
+    @Override
+    public void stop() {
+        scheduler.shutdown();
     }
 }
