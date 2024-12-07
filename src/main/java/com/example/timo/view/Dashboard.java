@@ -1,0 +1,180 @@
+package com.example.timo.view;
+
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.chart.*;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.beans.property.SimpleStringProperty;
+
+public class Dashboard extends Application {
+
+    @Override
+    public void start(Stage primaryStage) {
+        // --- Navigation Menu ---
+        VBox navMenu = new VBox();
+        navMenu.setMinWidth(150);
+        navMenu.setStyle("-fx-background-color: #34495E;");
+
+        Button btnDashboard = new Button("Dashboard");
+        Button btnTask = new Button("Task");
+        Button btnSettings = new Button("Settings");
+        Button btnProfile = new Button("Profile");
+
+        String buttonStyle = "-fx-background-color: #34495E; -fx-text-fill: white; -fx-font-size: 14px; "
+                + "-fx-pref-width: 180px; -fx-pref-height: 40px; -fx-border-color: transparent;";
+        String buttonHoverStyle = "-fx-background-color: #5D6D7E; -fx-text-fill: white;";
+
+        applyButtonHoverEffect(btnDashboard, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnTask, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnSettings, buttonStyle, buttonHoverStyle);
+        applyButtonHoverEffect(btnProfile, buttonStyle, buttonHoverStyle);
+
+        navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
+        navMenu.setSpacing(10);
+        navMenu.setAlignment(Pos.TOP_CENTER);
+        navMenu.setPadding(new Insets(20, 0, 0, 0));
+
+        // --- Main Content ---
+        BorderPane mainContent = new BorderPane();
+        mainContent.setPadding(new Insets(10));
+        mainContent.setCenter(createDashboard());
+
+        btnDashboard.setOnAction(e -> mainContent.setCenter(createDashboard()));
+        btnTask.setOnAction(e -> mainContent.setCenter(new Label("Task Page")));
+        btnSettings.setOnAction(e -> mainContent.setCenter(new Label("Settings Page")));
+        btnProfile.setOnAction(e -> mainContent.setCenter(new Label("Profile Page")));
+
+        // --- Main Layout ---
+        HBox root = new HBox(navMenu, mainContent);
+        HBox.setHgrow(mainContent, Priority.ALWAYS);
+
+        Scene scene = new Scene(root, 1000, 600);
+
+        // --- Primary Stage ---
+        primaryStage.setTitle("TIMO Dashboard");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
+        button.setStyle(normalStyle);
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
+        button.setOnMouseExited(e -> button.setStyle(normalStyle));
+    }
+
+    // --- Dashboard Layout ---
+    private VBox createDashboard() {
+        // --- Pie Chart ---
+        PieChart pieChart = new PieChart();
+        pieChart.setData(FXCollections.observableArrayList(
+                new PieChart.Data("Google", 40),
+                new PieChart.Data("VS Code", 42),
+                new PieChart.Data("YouTube", 28)
+        ));
+        pieChart.setTitle("Application Time");
+        pieChart.setLegendVisible(false);
+
+        // --- Bar Chart ---
+        CategoryAxis xAxis = new CategoryAxis();
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Usage (hours)");
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+        barChart.setTitle("Weekly Usage");
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Last Week");
+        series.getData().addAll(
+                new XYChart.Data<>("Mon", 2),
+                new XYChart.Data<>("Tue", 3),
+                new XYChart.Data<>("Wed", 4),
+                new XYChart.Data<>("Thu", 2.5),
+                new XYChart.Data<>("Fri", 5),
+                new XYChart.Data<>("Sat", 4.5),
+                new XYChart.Data<>("Sun", 3)
+        );
+
+        barChart.getData().add(series);
+        barChart.setLegendVisible(false);
+
+        // --- Table ---
+        TableView<AppUsage> table = new TableView<>();
+        ObservableList<AppUsage> data = FXCollections.observableArrayList(
+                new AppUsage("Google", "14 Feb 2024 12:30", "17 Feb 2024 12:30", "2h 03m", "2000MB", "12.5%", "90%"),
+                new AppUsage("VS Code", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "86.35%", "80%"),
+                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%")
+        );
+
+        table.setItems(data);
+        table.getColumns().addAll(
+                createTableColumn("Title", "title"),
+                createTableColumn("Start Date", "startDate"),
+                createTableColumn("End Date", "endDate"),
+                createTableColumn("Duration", "duration"),
+                createTableColumn("Memory", "memory"),
+                createTableColumn("GPU", "gpu"),
+                createTableColumn("%", "percentage")
+        );
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // --- Layout ---
+        HBox chartsContainer = new HBox(20, pieChart, barChart);
+        chartsContainer.setAlignment(Pos.CENTER);
+
+        VBox dashboard = new VBox(20, chartsContainer, table);
+        dashboard.setPadding(new Insets(20));
+        VBox.setVgrow(table, Priority.ALWAYS);
+
+        return dashboard;
+    }
+
+    private TableColumn<AppUsage, String> createTableColumn(String title, String property) {
+        TableColumn<AppUsage, String> column = new TableColumn<>(title);
+        column.setCellValueFactory(cellData -> cellData.getValue().property(property));
+        return column;
+    }
+
+    public static class AppUsage {
+        private final SimpleStringProperty title;
+        private final SimpleStringProperty startDate;
+        private final SimpleStringProperty endDate;
+        private final SimpleStringProperty duration;
+        private final SimpleStringProperty memory;
+        private final SimpleStringProperty gpu;
+        private final SimpleStringProperty percentage;
+
+        public AppUsage(String title, String startDate, String endDate, String duration, String memory, String gpu, String percentage) {
+            this.title = new SimpleStringProperty(title);
+            this.startDate = new SimpleStringProperty(startDate);
+            this.endDate = new SimpleStringProperty(endDate);
+            this.duration = new SimpleStringProperty(duration);
+            this.memory = new SimpleStringProperty(memory);
+            this.gpu = new SimpleStringProperty(gpu);
+            this.percentage = new SimpleStringProperty(percentage);
+        }
+
+        public SimpleStringProperty property(String name) {
+            return switch (name) {
+                case "title" -> title;
+                case "startDate" -> startDate;
+                case "endDate" -> endDate;
+                case "duration" -> duration;
+                case "memory" -> memory;
+                case "gpu" -> gpu;
+                case "percentage" -> percentage;
+                default -> null;
+            };
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
