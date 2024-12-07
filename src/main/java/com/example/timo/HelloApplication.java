@@ -1,7 +1,6 @@
 package com.example.timo;
 
 import com.example.timo.Controller.ApplicationsController;
-import com.example.timo.Module.SQLiteConnection;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -30,17 +29,46 @@ public class HelloApplication extends Application {
         //ApplicationsController initialization thread
         Task<Void> initialiseApplications = new Task<Void>() {
             @Override
-            protected Void call() throws Exception{
+            protected Void call() throws Exception {
                 applicationsController = new ApplicationsController();
-
-                System.out.println(applicationsController.ApplicationsList);
-
                 return null;
             }
 
             @Override
             protected void succeeded() {
                 System.out.println("Application initialized");
+                applicationsController.ListTrackedApplication();
+
+                // Loop to handle scheduler restart on errors
+                new Thread(() -> {
+                    while (true) {
+                        try {
+                            // Create Scheduler instance
+                            scheduler = Executors.newSingleThreadScheduledExecutor();
+
+                            // Pass a Runnable to the scheduler
+                            scheduler.scheduleAtFixedRate(() -> {
+                                try {
+                                    applicationsController.updateProcesses();
+                                } catch (Exception e) {
+                                    System.err.println("Error updating processes: " + e);
+                                    throw new RuntimeException(e); // Stops scheduler
+                                }
+
+                                applicationsController.ListTrackedApplication();
+                            }, 0, 10, TimeUnit.SECONDS); // 0 delay, repeat every 20 seconds
+
+                            // Break loop if scheduling is successful
+                            break;
+
+                        } catch (Exception e) {
+                            System.err.println("Error scheduling task: " + e.getMessage());
+                            try {
+                                Thread.sleep(1000); // Wait a second before retrying
+                            } catch (InterruptedException ignored) {}
+                        }
+                    }
+                }).start();
             }
 
             @Override
@@ -48,19 +76,16 @@ public class HelloApplication extends Application {
                 System.out.println("Application failed to initialize");
             }
         };
+
         Thread thread = new Thread(initialiseApplications);
         thread.setDaemon(true);
         thread.start();
 
-        //Create Scheduler instance
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(this::testScheduler, 0, 5, TimeUnit.SECONDS);
+
 
     }
 
-    public void testScheduler(){
-        System.out.println("scheduler executed");
-    }
+
     public static void main(String[] args) {
         launch();
     }
