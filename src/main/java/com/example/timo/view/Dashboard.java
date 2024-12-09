@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -104,7 +105,7 @@ public class Dashboard extends Application {
     }
 
     // --- Create Dashboard ---
-    private VBox createDashboard(Stage primaryStage) {
+    private Node createDashboard(Stage primaryStage) {
         // --- Pie Chart ---
         PieChart pieChart = new PieChart();
         pieChart.setData(FXCollections.observableArrayList(
@@ -119,8 +120,7 @@ public class Dashboard extends Application {
         pieChart.setLegendVisible(false);
         
         // Style and size the pie chart
-        pieChart.setPrefSize(400, 300);
-        pieChart.setMinSize(400, 300);
+        pieChart.setMinSize(300, 200);
         pieChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
         HBox.setHgrow(pieChart, Priority.ALWAYS); // Allow horizontal growth
 
@@ -133,8 +133,7 @@ public class Dashboard extends Application {
         barChart.setTitle("Weekly Usage");
         
         // Style and size the bar chart
-        barChart.setPrefSize(400, 300);
-        barChart.setMinSize(400, 300);
+        barChart.setMinSize(300, 200);
         barChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
         HBox.setHgrow(barChart, Priority.ALWAYS); // Allow horizontal growth
 
@@ -169,7 +168,7 @@ public class Dashboard extends Application {
 
         // Table styling and configuration
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setPrefHeight(200);
+        table.setPrefHeight(300);
         table.setMaxHeight(500);
         table.setMinHeight(200);
         
@@ -202,7 +201,6 @@ public class Dashboard extends Application {
 
         table.getColumns().forEach(column -> {
             column.setStyle(columnStyle);
-            column.setPrefWidth(USE_COMPUTED_SIZE); // Let columns adjust their width
             ((TableColumn)column).setCellFactory(tc -> {
                 TableCell cell = new TableCell() {
                     @Override
@@ -240,6 +238,17 @@ public class Dashboard extends Application {
         // Add components to dashboard
         dashboard.getChildren().addAll(chartsContainer, tableContainer);
 
+        // Create main container that will hold either dashboard or scrollPane
+        StackPane mainContainer = new StackPane();
+        
+        // Create ScrollPane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setStyle("-fx-background-color: transparent;");
+        scrollPane.setContent(dashboard);
+        
         // Make the layout responsive
         primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
             double width = newVal.doubleValue();
@@ -253,24 +262,39 @@ public class Dashboard extends Application {
                 chartsContainer.getChildren().add(verticalCharts);
                 
                 // Adjust chart sizes for vertical layout
-                pieChart.setPrefSize(width - 100, 300);
-                barChart.setPrefSize(width - 100, 300);
+                pieChart.setPrefSize(width - 40, 250);
+                barChart.setPrefSize(width - 40, 250);
+                
+                // Switch to scrollable layout
+                mainContainer.getChildren().clear();
+                mainContainer.getChildren().add(scrollPane);
             } else {
                 // Display charts horizontally
                 chartsContainer.getChildren().clear();
                 chartsContainer.getChildren().addAll(pieChart, barChart);
                 
                 // Adjust chart sizes for horizontal layout
-                double chartWidth = (width - 140) / 2; // Account for padding and spacing
+                double chartWidth = (width - 40) / 2;
                 pieChart.setPrefSize(chartWidth, 300);
                 barChart.setPrefSize(chartWidth, 300);
+                
+                // Switch to normal layout
+                mainContainer.getChildren().clear();
+                mainContainer.getChildren().add(dashboard);
             }
             
             // Adjust table width
-            table.setPrefWidth(width - 80); // Account for padding
+            table.setPrefWidth(width - 40);
         });
 
-        return dashboard;
+        // Initial setup based on window width
+        if (primaryStage.getWidth() < 900) {
+            mainContainer.getChildren().add(scrollPane);
+        } else {
+            mainContainer.getChildren().add(dashboard);
+        }
+
+        return mainContainer;
     }
 
     private void updateProcessTable() {
