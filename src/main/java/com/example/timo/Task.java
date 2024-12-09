@@ -1,4 +1,4 @@
-package com.example.timo;
+/* package com.example.timo;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -214,4 +214,4 @@ public class Task extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
+} */

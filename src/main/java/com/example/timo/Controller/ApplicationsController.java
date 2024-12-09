@@ -50,7 +50,7 @@ public class ApplicationsController {
             for(ApplicationHistory applicationHistory:storedApplicationsFromToday){
                 if(application.getName().equals(applicationHistory.getName())){
                     application.setId(applicationHistory.getId());
-                    application.setTotalDuration(application.getDuration().plus(Duration.ofSeconds(applicationHistory.getDuration())));
+                    application.setTotalDuration(application.getDuration().plus(applicationHistory.getDuration()));
                     break;
                 }
             }

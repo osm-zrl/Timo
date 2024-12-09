@@ -1,6 +1,9 @@
 package com.example.timo.view;
 
+import com.example.timo.Module.ProcessInfo;
+import com.example.timo.process.FrontendProcessLister;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,8 +15,16 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Dashboard extends Application {
+
+    private TableView<AppUsage> table;  
+    private ScheduledExecutorService scheduler;
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,7 +50,6 @@ public class Dashboard extends Application {
         applyButtonHoverEffect(btnTask, buttonStyle, buttonHoverStyle);
         applyButtonHoverEffect(btnSettings, buttonStyle, buttonHoverStyle);
         applyButtonHoverEffect(btnProfile, buttonStyle, buttonHoverStyle);
-
 
         navMenu.getChildren().addAll(btnDashboard, btnTask, btnSettings, btnProfile);
         navMenu.setSpacing(15);
@@ -74,12 +84,23 @@ public class Dashboard extends Application {
 
         Scene scene = new Scene(root, 1000, 600);
 
-
         primaryStage.setTitle(" TIMO");
         Image icon = new Image(getClass().getResourceAsStream("/Timo-1.jpg"));
         primaryStage.getIcons().add(icon);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Initialize the scheduler
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            Platform.runLater(this::updateProcessTable);
+        }, 0, 5, TimeUnit.SECONDS);
+
+        primaryStage.setOnCloseRequest(e -> {
+            if (scheduler != null) {
+                scheduler.shutdown();
+            }
+        });
     }
 
     // --- Create Dashboard ---
@@ -96,18 +117,30 @@ public class Dashboard extends Application {
         pieChart.getData().get(1).getNode().setStyle("-fx-pie-color: #64B5F6;");
         pieChart.getData().get(2).getNode().setStyle("-fx-pie-color: #E57373;");
         pieChart.setLegendVisible(false);
+        
+        // Style and size the pie chart
+        pieChart.setPrefSize(400, 300);
+        pieChart.setMinSize(400, 300);
+        pieChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+        HBox.setHgrow(pieChart, Priority.ALWAYS); // Allow horizontal growth
 
-       // --- Bar Chart ---
+        // --- Bar Chart ---
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Usage (hours)");
 
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle("Weekly Usage");
+        
+        // Style and size the bar chart
+        barChart.setPrefSize(400, 300);
+        barChart.setMinSize(400, 300);
+        barChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+        HBox.setHgrow(barChart, Priority.ALWAYS); // Allow horizontal growth
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Last Week");
-        series.getData().addAll(
+        series.getData().addAll(FXCollections.observableArrayList(
                 new XYChart.Data<>("Mon", 2),
                 new XYChart.Data<>("Tue", 3),
                 new XYChart.Data<>("Wed", 4),
@@ -115,67 +148,152 @@ public class Dashboard extends Application {
                 new XYChart.Data<>("Fri", 5),
                 new XYChart.Data<>("Sat", 4.5),
                 new XYChart.Data<>("Sun", 3)
-        );
+        ));
 
         barChart.getData().add(series);
         barChart.setLegendVisible(false);
 
-        // Apply custom style classes to each bar
-        series.getData().forEach(data -> {
-            String styleClass = "bar-" + data.getXValue().toLowerCase();
-            data.getNode().getStyleClass().add(styleClass);
-        });
-
-        String barColor = "-fx-bar-fill: #80CBC4;"; // Green color
+        String barColor = "-fx-bar-fill: #80CBC4;";
         series.getData().forEach(data -> data.getNode().setStyle(barColor));
 
-
         // --- Table ---
-        TableView<AppUsage> table = new TableView<>();
-        ObservableList<AppUsage> data = FXCollections.observableArrayList(
-                new AppUsage("Google", "14 Feb 2024 12:30", "17 Feb 2024 12:30", "2h 03m", "2000MB", "12.5%", "90%"),
-                new AppUsage("VS Code", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "86.35%", "80%"),
-                new AppUsage("YouTube", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "210.91%", "55%"),
-                new AppUsage("Spotify", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "40%"),
-                new AppUsage("Instagram", "14 Feb 2024 12:30", "14 Feb 2024 12:30", "2h 03m", "2000MB", "1.73%", "12%")
-        );
-
-        table.setItems(data);
+        table = new TableView<>();
+        
         table.getColumns().addAll(
-                createTableColumn("Title", "title"),
-                createTableColumn("Start Date", "startDate"),
-                createTableColumn("End Date", "endDate"),
-                createTableColumn("Duration", "duration"),
+                createTableColumn("Name", "name"),
+                createTableColumn("PID", "pid"),
                 createTableColumn("Memory", "memory"),
-                createTableColumn("GPU", "gpu"),
-                createTableColumn("%", "percentage")
+                createTableColumn("CPU", "cpu"),
+                createTableColumn("Duration", "duration")
         );
 
+        // Table styling and configuration
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.setStyle("-fx-border-color: #cccccc; -fx-border-width: 1;");
-        table.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        table.setPrefHeight(200);
+        table.setMaxHeight(500);
+        table.setMinHeight(200);
+        
+        // Style the table container
+        VBox tableContainer = new VBox(table);
+        tableContainer.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+        tableContainer.setPadding(new Insets(20));
+        VBox.setVgrow(tableContainer, Priority.ALWAYS); // Allow vertical growth
+        HBox.setHgrow(tableContainer, Priority.ALWAYS); // Allow horizontal growth
+        
+        // Remove empty rows
+        table.setFixedCellSize(40);
+        table.setPlaceholder(new Label("No processes found"));
+        
+        // Style the table
+        table.setStyle("-fx-border-color: #cccccc; " +
+                      "-fx-border-width: 1; " +
+                      "-fx-font-size: 14px; " +
+                      "-fx-text-fill: #333333;");
+
+        // Style the columns and cells
+        String columnStyle = "-fx-alignment: CENTER; " +
+                           "-fx-font-size: 14px; " +
+                           "-fx-font-weight: bold; " +
+                           "-fx-background-color: #f5f5f5; " +
+                           "-fx-padding: 10px;";
+
+        String cellStyle = "-fx-alignment: CENTER; " +
+                         "-fx-padding: 10px;";
+
         table.getColumns().forEach(column -> {
-            column.setStyle("-fx-font-size: 14px; -fx-background-color: #f5f5f5;");
+            column.setStyle(columnStyle);
+            column.setPrefWidth(USE_COMPUTED_SIZE); // Let columns adjust their width
+            ((TableColumn)column).setCellFactory(tc -> {
+                TableCell cell = new TableCell() {
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                            setGraphic(null);
+                        } else {
+                            setText(item.toString());
+                        }
+                        setStyle(cellStyle);
+                    }
+                };
+                return cell;
+            });
         });
 
+        updateProcessTable();
 
-        // --- Responsive Layout ---
-        VBox chartsBox = new VBox(20, pieChart, barChart);
-        VBox dashboard = new VBox(20, chartsBox, table);
+        // Create charts container with horizontal layout
+        HBox chartsContainer = new HBox(20);
+        chartsContainer.setAlignment(Pos.CENTER);
+        chartsContainer.setPadding(new Insets(20));
+        chartsContainer.getChildren().addAll(pieChart, barChart);
+        HBox.setHgrow(chartsContainer, Priority.ALWAYS); // Allow horizontal growth
+        
+        // Create main dashboard container
+        VBox dashboard = new VBox(20);
+        dashboard.setAlignment(Pos.TOP_CENTER);
         dashboard.setPadding(new Insets(20));
+        dashboard.setStyle("-fx-background-color: #f8f9fa;");
+        dashboard.setFillWidth(true); // Make children fill width
+        
+        // Add components to dashboard
+        dashboard.getChildren().addAll(chartsContainer, tableContainer);
 
+        // Make the layout responsive
         primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.doubleValue() < 800) {
-                chartsBox.getChildren().clear();
-                chartsBox.getChildren().addAll(pieChart, barChart); // Vertical stack
+            double width = newVal.doubleValue();
+            if (width < 900) {
+                // Stack charts vertically
+                chartsContainer.getChildren().clear();
+                VBox verticalCharts = new VBox(20);
+                verticalCharts.setAlignment(Pos.CENTER);
+                verticalCharts.getChildren().addAll(pieChart, barChart);
+                VBox.setVgrow(verticalCharts, Priority.ALWAYS);
+                chartsContainer.getChildren().add(verticalCharts);
+                
+                // Adjust chart sizes for vertical layout
+                pieChart.setPrefSize(width - 100, 300);
+                barChart.setPrefSize(width - 100, 300);
             } else {
-                chartsBox.getChildren().clear();
-                HBox horizontalChartsBox = new HBox(100, pieChart, barChart);
-                chartsBox.getChildren().add(horizontalChartsBox); // Horizontal stack
+                // Display charts horizontally
+                chartsContainer.getChildren().clear();
+                chartsContainer.getChildren().addAll(pieChart, barChart);
+                
+                // Adjust chart sizes for horizontal layout
+                double chartWidth = (width - 140) / 2; // Account for padding and spacing
+                pieChart.setPrefSize(chartWidth, 300);
+                barChart.setPrefSize(chartWidth, 300);
             }
+            
+            // Adjust table width
+            table.setPrefWidth(width - 80); // Account for padding
         });
 
         return dashboard;
+    }
+
+    private void updateProcessTable() {
+        ArrayList<ProcessInfo> processes = FrontendProcessLister.getProcessList();
+        ObservableList<AppUsage> data = FXCollections.observableArrayList();
+        
+        for (ProcessInfo process : processes) {
+            data.add(new AppUsage(
+                process.getName(),
+                process.getPid().toString(),
+                String.format("%.2f MB", process.getMemory()),
+                String.format("%.2f%%", process.getCpu()),
+                formatDuration(process.getDuration())
+            ));
+        }
+        
+        table.setItems(data);
+    }
+
+    private String formatDuration(Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        return String.format("%dh %02dm", hours, minutes);
     }
 
     private void applyButtonHoverEffect(Button button, String normalStyle, String hoverStyle) {
@@ -192,35 +310,29 @@ public class Dashboard extends Application {
     }
 
     public static class AppUsage {
-        private final SimpleStringProperty title;
-        private final SimpleStringProperty startDate;
-        private final SimpleStringProperty endDate;
-        private final SimpleStringProperty duration;
+        private final SimpleStringProperty name;
+        private final SimpleStringProperty pid;
         private final SimpleStringProperty memory;
-        private final SimpleStringProperty gpu;
-        private final SimpleStringProperty percentage;
+        private final SimpleStringProperty cpu;
+        private final SimpleStringProperty duration;
 
-        public AppUsage(String title, String startDate, String endDate, String duration, String memory, String gpu, String percentage) {
-            this.title = new SimpleStringProperty(title);
-            this.startDate = new SimpleStringProperty(startDate);
-            this.endDate = new SimpleStringProperty(endDate);
-            this.duration = new SimpleStringProperty(duration);
+        public AppUsage(String name, String pid, String memory, String cpu, String duration) {
+            this.name = new SimpleStringProperty(name);
+            this.pid = new SimpleStringProperty(pid);
             this.memory = new SimpleStringProperty(memory);
-            this.gpu = new SimpleStringProperty(gpu);
-            this.percentage = new SimpleStringProperty(percentage);
+            this.cpu = new SimpleStringProperty(cpu);
+            this.duration = new SimpleStringProperty(duration);
         }
 
         public SimpleStringProperty property(String name) {
-            return switch (name) {
-                case "title" -> title;
-                case "startDate" -> startDate;
-                case "endDate" -> endDate;
-                case "duration" -> duration;
-                case "memory" -> memory;
-                case "gpu" -> gpu;
-                case "percentage" -> percentage;
-                default -> null;
-            };
+            switch (name) {
+                case "name": return this.name;
+                case "pid": return this.pid;
+                case "memory": return this.memory;
+                case "cpu": return this.cpu;
+                case "duration": return this.duration;
+                default: return null;
+            }
         }
     }
 

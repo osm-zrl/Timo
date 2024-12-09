@@ -3,6 +3,7 @@ module com.example.timo {
     requires javafx.fxml;
     requires java.sql;
     requires static lombok;
+    requires transitive javafx.graphics;
 
 
     opens com.example.timo to javafx.fxml;
