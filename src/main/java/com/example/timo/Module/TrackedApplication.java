@@ -16,29 +16,33 @@ public class TrackedApplication extends ProcessInfo{
     public TrackedApplication(Integer id,String name, Integer pid, double memory, double cpu, Duration duration) {
         super(name, pid, memory, cpu, duration);
         this.id = id;
+        this.durationLimit = duration;
     }
 
     //Constructor with ProcessInfo class as param
     public TrackedApplication(ProcessInfo processInfo){
         this(null,processInfo.getName(), processInfo.getPid(), processInfo.getMemory(), processInfo.getCpu(), processInfo.getDuration());
+        this.totalDuration = processInfo.getDuration();
     }
 
     //Constructor with ApplicationHistory Class as Param
     public TrackedApplication(ApplicationHistory applicationHistory){
         this(applicationHistory.getId(), applicationHistory.getName(), null,0,0,Duration.ZERO);
-        this.totalDuration = applicationHistory.getDuration();
+        this.totalDuration = Duration.ofSeconds(applicationHistory.getDuration());
 
     }
 
     public void resetDuration(){this.duration = Duration.ZERO;}
 
-    public void addDuration(){
-        this.totalDuration = this.totalDuration.plus(duration);
-        this.resetDuration();
+    public void addDuration(Duration addedDuration){
+        this.totalDuration = this.totalDuration.plus(addedDuration);
     }
 
     public boolean checkDurationLimit(){
-        return this.totalDuration.compareTo(this.durationLimit) > 0;
+        if(this.durationLimit == Duration.ZERO){
+            return false;
+        }
+        return this.totalDuration.toSeconds()>this.durationLimit.toSeconds();
     }
 
     @Override
@@ -54,7 +58,7 @@ public class TrackedApplication extends ProcessInfo{
             '}';
     }
 
-    private String formatDuration(Duration duration) {
+    public String formatDuration(Duration duration) {
         if (duration == null) {
             return "00:00:00";
         }

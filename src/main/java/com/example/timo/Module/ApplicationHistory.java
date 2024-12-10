@@ -7,19 +7,24 @@ import lombok.ToString;
 import java.time.Duration;
 import java.time.LocalDate;
 
-@Getter
 @Setter
 @ToString
+@Getter
 public class ApplicationHistory {
+
     private int id;
     private String name;
-    private LocalDate date;
-    private Duration duration;
+    private String date;
+    private Integer duration;
 
     public ApplicationHistory(int id, String name, String date, int duration) {
         this.id = id;
         this.name = name;
-        this.date = LocalDate.parse(date);
-        this.duration = Duration.ofSeconds(duration);
+        this.date = date;
+        this.duration = duration;
+    }
+
+    public ApplicationHistory(TrackedApplication trackedApplication, String date){
+        this(trackedApplication.getId()==null ? 0 : trackedApplication.getId(), trackedApplication.getName(),date,(int)trackedApplication.getTotalDuration().toSeconds());
     }
 }
