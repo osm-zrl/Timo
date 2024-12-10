@@ -1,0 +1,14 @@
+.custom-button {
+    -fx-background-color: #347877; /* Couleur de fond par défaut */
+    -fx-text-fill: white;
+    -fx-font-size: 23px;
+    -fx-padding: 10px 20px;
+    -fx-border-color: transparent;
+}
+
+.custom-button:hover {
+    -fx-background-color: #1E4848 !important; /* Couleur lors du hover */
+    -fx-text-fill: white; /* Conserver la couleur du texte */
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 5); /* Ombre portée */
+}

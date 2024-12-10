@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="883.0" prefWidth="1499.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <GridPane prefHeight="94.0" prefWidth="619.0" style="-fx-border-radius: 25px; -fx-background-color: fff;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="31.19998779296875" minHeight="10.0" prefHeight="27.19998779296875" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+   </top>
+   <left>
+      <GridPane prefHeight="306.0" prefWidth="154.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #347877;" styleClass="custom-button" text="Dashboard" textFill="WHITE">
+                     <font>
+                        <Font name="Arial" size="23.0" />
+                     </font>
+                  </Button>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #347877;" styleClass="custom-button" text="Task" textFill="WHITE" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Arial" size="23.0" />
+                     </font>
+                  </Button>
+                  <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: #347877;" styleClass="custom-button" text="Settings" textFill="WHITE" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Arial" size="23.0" />
+                     </font>
+                  </Button>
+               </children>
+            </GridPane>
+            <Pane prefHeight="282.0" prefWidth="154.0" style="-fx-background-color: #347877;" GridPane.rowIndex="2" />
+            <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #347877;" GridPane.rowIndex="1" />
+         </children>
+      </GridPane>
+   </left>
+   <bottom>
+      <Pane prefHeight="30.0" prefWidth="600.0" style="-fx-background-color: fff;" BorderPane.alignment="CENTER" />
+   </bottom>
+   <right>
+      <Pane prefHeight="275.0" prefWidth="24.0" style="-fx-background-color: fff;" BorderPane.alignment="CENTER" />
+   </right>
+   <center>
+      <GridPane style="-fx-background-color: fff;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="204.5999755859375" minWidth="10.0" prefWidth="166.00003204345703" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="386.40003662109376" minWidth="10.0" prefWidth="223.599967956543" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="502.999951171875" minWidth="10.0" prefWidth="502.999951171875" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="523.4000488281251" minWidth="10.0" prefWidth="367.800048828125" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="386.40003662109376" minWidth="10.0" prefWidth="78.59995117187509" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="217.40001525878907" minHeight="0.0" prefHeight="79.19996795654296" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="217.40001525878907" minHeight="10.0" prefHeight="55.99995880126953" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="546.3999813079835" minHeight="10.0" prefHeight="540.0000411987305" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="162.20001678466798" minHeight="10.0" prefHeight="52.800024414062534" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="162.20001678466798" minHeight="10.0" prefHeight="52.800024414062534" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+             <Pane maxHeight="552.0" maxWidth="322.0" minHeight="552.0" minWidth="322.0" prefHeight="552.0" prefWidth="322.0" style="-fx-border-radius: 25px; -fx-background-color: #F8FFFB; -fx-border-color: #ECE4E4; -fx-border-width: 1px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.5, 0, 0); -fx-background-radius: 25px;" GridPane.columnIndex="1" GridPane.rowIndex="2">               <children>
+                  <Text layoutX="57.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="60.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="60.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="61.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="58.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-border-radius: 25px; -fx-background-color: F8FFFB;" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="59.0" layoutY="405.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="58.0" layoutY="459.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="56.0" layoutY="511.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile" wrappingWidth="312.5316162109375">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="59.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Text>
+                  <Circle fill="DODGERBLUE" layoutX="29.0" layoutY="55.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="29.0" layoutY="111.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="167.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="223.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="283.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="341.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="398.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="452.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fill="DODGERBLUE" layoutX="30.0" layoutY="504.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Pane layoutX="21.0" layoutY="79.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="30.0" layoutY="135.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="30.0" layoutY="195.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;">
+                     <children>
+                        <Pane prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="30.0" layoutY="246.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="38.0" layoutY="311.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="38.0" layoutY="364.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="37.0" layoutY="413.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="37.0" layoutY="468.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+                  <Pane layoutX="42.0" layoutY="517.0" prefHeight="1.0" prefWidth="280.0" style="-fx-background-color: DBE5EB;" />
+               </children></Pane>
+             <Pane maxHeight="350.0" maxWidth="250.0" minHeight="350.0" minWidth="220.0" prefHeight="350.0" prefWidth="220.0" style="-fx-background-color: #F8FFFB; -fx-border-color: #ECE4E4; -fx-border-width: 1px; -fx-border-radius: 25px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.5, 0, 0); -fx-background-radius: 25px;" GridPane.columnIndex="3" GridPane.rowIndex="2">               <children>
+                  <Circle fill="DODGERBLUE" layoutX="24.0" layoutY="32.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Text layoutX="50.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="programmation mobile">
+                     <font>
+                        <Font name="Arial" size="12.0" />
+                     </font></Text>
+                  <Pane layoutX="16.0" layoutY="84.0" prefHeight="1.0" prefWidth="223.0" style="-fx-background-color: DBE5EB;" />
+                  <CheckBox layoutX="37.0" layoutY="105.0" mnemonicParsing="false" text="interface pour prof" />
+                  <CheckBox layoutX="36.0" layoutY="152.0" mnemonicParsing="false" text="interface pour prof" />
+                  <CheckBox layoutX="36.0" layoutY="194.0" mnemonicParsing="false" text="interface pour prof" />
+                  <CheckBox layoutX="38.0" layoutY="237.0" mnemonicParsing="false" text="interface pour prof" />
+                  <Text fill="#aca2a2" fontSmoothingType="LCD" layoutX="69.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#aca2a2" fontSmoothingType="LCD" layoutX="70.0" layoutY="187.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#aca2a2" fontSmoothingType="LCD" layoutX="69.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#aca2a2" fontSmoothingType="LCD" layoutX="70.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+               </children></Pane>
+            <TextFlow prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Task" wrappingWidth="76.2099609375">
+                     <font>
+                        <Font size="39.0" />
+                     </font>
+                  </Text>
+               </children>
+            </TextFlow>
+            <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Les taches a realisée" wrappingWidth="181.3055419921875" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Italic" size="20.0" />
+               </font>
+            </Text>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>
