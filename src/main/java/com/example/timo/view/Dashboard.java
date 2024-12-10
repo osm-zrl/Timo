@@ -1,4 +1,4 @@
-package com.example.timo;
+package com.example.timo.view;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.scene.input.MouseEvent;
 import javafx.beans.property.SimpleStringProperty;
 
-public class HelloApplication extends Application {
+public class Dashboard extends Application {
 
     @Override
     public void start(Stage primaryStage) {
