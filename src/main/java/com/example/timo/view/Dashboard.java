@@ -1,5 +1,6 @@
 package com.example.timo.view;
 
+import com.example.timo.Controller.ApplicationsController;
 import com.example.timo.Module.ProcessInfo;
 import com.example.timo.process.FrontendProcessLister;
 import javafx.application.Application;
@@ -26,9 +27,10 @@ public class Dashboard extends Application {
 
     private TableView<AppUsage> table;  
     private ScheduledExecutorService scheduler;
+    public ApplicationsController applicationsController;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         // --- Menu vertical ---
         VBox navMenu = new VBox();
         navMenu.setMinWidth(150);
@@ -92,9 +94,11 @@ public class Dashboard extends Application {
         primaryStage.show();
 
         // Initialize the scheduler
+        applicationsController = new ApplicationsController();
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
             Platform.runLater(this::updateProcessTable);
+            applicationsController.updateProcesses();
         }, 0, 5, TimeUnit.SECONDS);
 
         primaryStage.setOnCloseRequest(e -> {
