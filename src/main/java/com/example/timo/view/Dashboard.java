@@ -110,21 +110,45 @@ public class Dashboard extends Application {
         applicationsController = new ApplicationsController();
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
+        try {
+            // Update database first
+            applicationsController.updateProcesses();
+            
+            // Then update UI on JavaFX thread
             Platform.runLater(() -> {
+                try {
+                 // Update process table
                 updateProcessTable();
-                // Create a new pie chart and update it in the UI
+                
+                // Get container and update charts
                 HBox chartsContainer = (HBox) ((VBox) table.getParent().getParent()).getChildren().get(0);
+                
+                // Create and style new charts
                 PieChart newPieChart = createDynamicPieChart();
-                newPieChart.setMinSize(300, 200);
-                newPieChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
                 BarChart<String, Number> newBarChart = createWeeklyBarChart();
+                
+                newPieChart.setMinSize(300, 200);
                 newBarChart.setMinSize(300, 200);
-                if (!chartsContainer.getChildren().isEmpty()) {
+                
+                String chartStyle = "-fx-background-color: white; -fx-padding: 15px; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);";
+                
+                newPieChart.setStyle(chartStyle);
+                newBarChart.setStyle(chartStyle);
+                
+                // Update both charts
+                if (chartsContainer != null && chartsContainer.getChildren().size() >= 2) {
                     chartsContainer.getChildren().set(0, newPieChart);
+                    chartsContainer.getChildren().set(1, newBarChart);
                 }
-            });
-            //applicationsController.updateProcesses();  --use it later for optimization
-        }, 0, 5, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                System.err.println("Error updating UI: " + e.getMessage());
+            }
+        });
+    } catch (Exception e) {
+        System.err.println("Error in scheduler: " + e.getMessage());
+    }
+    }, 0, 5, TimeUnit.SECONDS);
 
         primaryStage.setOnCloseRequest(e -> {
             if (scheduler != null) {
