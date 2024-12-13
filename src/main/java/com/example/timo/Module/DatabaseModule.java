@@ -3,7 +3,10 @@ package com.example.timo.Module;
 import com.example.timo.Database.DatabaseConnection;
 
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class DatabaseModule {
@@ -32,7 +35,9 @@ public class DatabaseModule {
                     "id INTEGER PRIMARY KEY, " +
                     "name TEXT, " +
                     "duration INTEGER, " +
-                    "date TEXT CHECK (date = strftime('%Y-%m-%d', date))" +
+                    "date TEXT CHECK (date = strftime('%Y-%m-%d', date))," +
+                    "start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
+                    "end_time TIMESTAMP" +
                     ")";
                 stmt.executeUpdate(createApplicationsTableSQL);
 
@@ -64,8 +69,10 @@ public class DatabaseModule {
                 String name = rs.getString("name");
                 int duration = rs.getInt("duration");
                 String date = rs.getString("date");
+                Timestamp start_time = rs.getTimestamp("start_time");
+                Timestamp end_time = rs.getTimestamp("end_time");
 
-                ApplicationHistory app = new ApplicationHistory(id, name, date, duration);
+                ApplicationHistory app = new ApplicationHistory(id, name, date, duration, start_time, end_time);
                 list.add(app);
             }
         } catch (SQLException e) {
@@ -86,12 +93,14 @@ public class DatabaseModule {
             stmt.setString(1, dateInput);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String name = rs.getString("name");
-                    int duration = rs.getInt("duration");
-                    String date = rs.getString("date");
-
-                    ApplicationHistory app = new ApplicationHistory(id, name, date, duration);
+                    ApplicationHistory app = new ApplicationHistory(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("date"),
+                        rs.getInt("duration"),
+                        rs.getTimestamp("start_time"),
+                        rs.getTimestamp("end_time")
+                    );
                     list.add(app);
                 }
             }
@@ -121,9 +130,11 @@ public class DatabaseModule {
                     String appName = rs.getString("name");
                     int duration = rs.getInt("duration");
                     String date = rs.getString("date");
+                    Timestamp start_time = rs.getTimestamp("start_time");
+                    Timestamp end_time = rs.getTimestamp("end_time");
 
                     // Create a new ApplicationHistory object
-                    app = new ApplicationHistory(id, appName, date, duration);
+                    app = new ApplicationHistory(id, appName, date, duration, start_time, end_time);
                 }
             }
         } catch (SQLException e) {
@@ -135,7 +146,7 @@ public class DatabaseModule {
 
     // Increment stored application's duration by an amount
     public boolean incrementDurationStoredApplication(int id, long duration) throws Exception {
-        String sql = "UPDATE Applications SET duration = ? WHERE id = ?";
+        String sql = "UPDATE Applications SET duration = ?, end_time = CURRENT_TIMESTAMP WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -160,7 +171,9 @@ public class DatabaseModule {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new ApplicationHistory(id, rs.getString("name"), rs.getString("date"), rs.getInt("duration"));
+                    return new ApplicationHistory(id, rs.getString("name"),
+                     rs.getString("date"), rs.getInt("duration"),
+                     rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
                 } else {
                     return null;
                 }
@@ -171,7 +184,7 @@ public class DatabaseModule {
     //Store new ApplicationHistory in database
     public void insertApplication(ApplicationHistory applicationHistory) throws SQLException {
         // SQL query to insert a new row into the Applications table
-        String sql = "INSERT INTO Applications (name, duration, date) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Applications (name, duration, date, start_time, end_time) VALUES (?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))";
 
         // Establish the database connection and execute the insert query
         try (Connection conn = DatabaseConnection.getConnection();
@@ -237,4 +250,28 @@ public class DatabaseModule {
             }
         }
     }
+
+    public double getActualUsageHours(String date) {
+        try {
+            // First get all apps for that date
+            String query = "SELECT SUM(duration) as total_duration FROM Applications WHERE date = ?";
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(query)) {
+                
+                stmt.setString(1, date);
+                ResultSet rs = stmt.executeQuery();
+    
+                if (rs.next()) {
+                    // Convert seconds to hours
+                    double totalSeconds = rs.getDouble("total_duration");
+                    return totalSeconds / 3600.0; // Convert seconds to hours
+                }
+            }
+            return 0.0;
+        } catch (SQLException e) {
+            System.err.println("Error calculating usage hours: " + e.getMessage());
+            return 0.0;
+        }
+    }
+
 }
