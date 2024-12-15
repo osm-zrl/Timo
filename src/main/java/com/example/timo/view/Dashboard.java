@@ -21,15 +21,15 @@ import javafx.stage.Stage;
 import javafx.beans.property.SimpleStringProperty;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.Duration;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +40,6 @@ public class Dashboard extends Application {
     private ScheduledExecutorService scheduler;
     public ApplicationsController applicationsController;
     private HBox chartsContainer; // Add this field
-    private ScrollPane scrollPane; // Add this field
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -108,6 +107,14 @@ public class Dashboard extends Application {
 
         // Initialize the scheduler
         applicationsController = new ApplicationsController();
+        DatabaseModule dbModule = new DatabaseModule();
+        Timer cleanupTimer = new Timer();
+        cleanupTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                dbModule.cleanupOldRecords();
+            }
+        }, getTomorrowMidnight(), 24 * 60 * 60 * 1000); // Run daily
         scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
         try {
@@ -117,35 +124,43 @@ public class Dashboard extends Application {
             // Then update UI on JavaFX thread
             Platform.runLater(() -> {
                 try {
-                 // Update process table
-                updateProcessTable();
-                
-                // Get container and update charts
-                HBox chartsContainer = (HBox) ((VBox) table.getParent().getParent()).getChildren().get(0);
-                
-                // Create and style new charts
-                PieChart newPieChart = createDynamicPieChart();
-                BarChart<String, Number> newBarChart = createWeeklyBarChart();
-                
-                newPieChart.setMinSize(300, 200);
-                newBarChart.setMinSize(300, 200);
-                
-                String chartStyle = "-fx-background-color: white; -fx-padding: 15px; " +
-                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);";
-                
-                newPieChart.setStyle(chartStyle);
-                newBarChart.setStyle(chartStyle);
-                
-                // Update both charts
-                if (chartsContainer != null && chartsContainer.getChildren().size() >= 2) {
-                    chartsContainer.getChildren().set(0, newPieChart);
-                    chartsContainer.getChildren().set(1, newBarChart);
+                    // Update process table
+                    updateProcessTable();
+                    
+                    // Get charts container
+                    HBox chartsContainer = (HBox) ((VBox) table.getParent().getParent()).getChildren().get(0);
+                    
+                    // Create and style new charts
+                    PieChart newPieChart = createDynamicPieChart();
+                    BarChart<String, Number> newBarChart = createWeeklyBarChart();
+                    
+                    // Set size constraints
+                    newPieChart.setMinSize(300, 200);
+                    newPieChart.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                    newPieChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                    HBox.setHgrow(newPieChart, Priority.ALWAYS);
+                    
+                    newBarChart.setMinSize(300, 200);
+                    newBarChart.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                    newBarChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                    HBox.setHgrow(newBarChart, Priority.ALWAYS);
+                    
+                    // Apply styles
+                    String chartStyle = "-fx-background-color: white; -fx-padding: 15px; " +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);";
+                    newPieChart.setStyle(chartStyle);
+                    newBarChart.setStyle(chartStyle);
+                    
+                    // Update both charts
+                    if (chartsContainer != null && chartsContainer.getChildren().size() >= 2) {
+                        chartsContainer.getChildren().set(0, newPieChart);
+                        chartsContainer.getChildren().set(1, newBarChart);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error updating UI: " + e.getMessage());
                 }
+            });
             } catch (Exception e) {
-                System.err.println("Error updating UI: " + e.getMessage());
-            }
-        });
-    } catch (Exception e) {
         System.err.println("Error in scheduler: " + e.getMessage());
     }
     }, 0, 5, TimeUnit.SECONDS);
@@ -172,15 +187,18 @@ public class Dashboard extends Application {
         
         // Style and size the pie chart
         pieChart.setMinSize(300, 200);
+        pieChart.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        pieChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         pieChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
         HBox.setHgrow(pieChart, Priority.ALWAYS); // Allow horizontal growth
 
         // --- Bar Chart ---
         BarChart<String, Number> barChart = createWeeklyBarChart();
-        barChart.setMinSize(300, 200);
         
         // Style and size the bar chart
         barChart.setMinSize(300, 200);
+        barChart.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        barChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         barChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
         HBox.setHgrow(barChart, Priority.ALWAYS); // Allow horizontal growth
 
@@ -253,11 +271,13 @@ public class Dashboard extends Application {
         updateProcessTable();
 
         // Create charts container with horizontal layout
+       // In createDashboard method, update the charts container setup:
         chartsContainer = new HBox(20);
-        chartsContainer.setId("chartsContainer"); // Add ID
+        chartsContainer.setId("chartsContainer");
         chartsContainer.setAlignment(Pos.CENTER);
         chartsContainer.setPadding(new Insets(20));
-        chartsContainer.getChildren().addAll(pieChart, barChart);
+        chartsContainer.setPrefWidth(Region.USE_COMPUTED_SIZE); // Add this
+        chartsContainer.setMaxWidth(Double.MAX_VALUE); // Add this
         HBox.setHgrow(chartsContainer, Priority.ALWAYS);
         
         // Create main dashboard container
@@ -289,30 +309,32 @@ public class Dashboard extends Application {
                 chartsContainer.getChildren().clear();
                 VBox verticalCharts = new VBox(20);
                 verticalCharts.setAlignment(Pos.CENTER);
+                verticalCharts.setMaxWidth(Double.MAX_VALUE);
                 verticalCharts.getChildren().addAll(pieChart, barChart);
                 VBox.setVgrow(verticalCharts, Priority.ALWAYS);
                 chartsContainer.getChildren().add(verticalCharts);
                 
                 // Adjust chart sizes for vertical layout
-                pieChart.setPrefSize(width - 40, 250);
-                barChart.setPrefSize(width - 40, 250);
+                double chartHeight = 300;
+                pieChart.setPrefSize(width - 80, chartHeight);
+                barChart.setPrefSize(width - 80, chartHeight);
                 
-                // Switch to scrollable layout
+/*                 // Switch to scrollable layout
                 mainContainer.getChildren().clear();
-                mainContainer.getChildren().add(scrollPane);
+                mainContainer.getChildren().add(scrollPane); */
             } else {
                 // Display charts horizontally
                 chartsContainer.getChildren().clear();
                 chartsContainer.getChildren().addAll(pieChart, barChart);
                 
                 // Adjust chart sizes for horizontal layout
-                double chartWidth = (width - 40) / 2;
-                pieChart.setPrefSize(chartWidth, 300);
-                barChart.setPrefSize(chartWidth, 300);
+                double chartWidth = (width - 100) / 2;
+                pieChart.setPrefSize(chartWidth, 400);
+                barChart.setPrefSize(chartWidth, 400);
                 
-                // Switch to normal layout
+                /* // Switch to normal layout
                 mainContainer.getChildren().clear();
-                mainContainer.getChildren().add(dashboard);
+                mainContainer.getChildren().add(dashboard); */
             }
             
             // Adjust table width
@@ -457,86 +479,96 @@ public class Dashboard extends Application {
     private BarChart<String, Number> createWeeklyBarChart() {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
+
+        double maxHours = 0;
+        try {
+            DatabaseModule dbModule = new DatabaseModule();
+            Map<String, Long> weeklyUptime = dbModule.getWeeklyUptime();
+            maxHours = weeklyUptime.values().stream()
+                .mapToDouble(seconds -> seconds / 3600.0)
+                .max()
+                .orElse(0.0);
+        } catch (Exception e) {
+            System.err.println("Error getting max uptime: " + e.getMessage());
+        }
+
+        double upperBound = Math.ceil(Math.max(maxHours * 1.2, 4)); // minimum 4 hours
+        double tickUnit = Math.max(1, Math.ceil(upperBound / 8)); // 8 major ticks max
+    
         
         // Configure y-axis
-        yAxis.setLabel("Usage (h)");
+        yAxis.setLabel("Hours");
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(upperBound);
+        yAxis.setTickUnit(tickUnit);
+        yAxis.setMinorTickCount(1);
         yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
             @Override
             public String toString(Number object) {
-                return String.format("%.1f", object.doubleValue());
+                return String.format("%dh", object.intValue());
             }
         });
-        yAxis.setTickUnit(2); // Show tick marks every 2 hours
-        yAxis.setMinorTickCount(1); // Show minor ticks between major ticks
+    
         
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
-        barChart.setTitle("Weekly Usage");
-        barChart.setStyle("-fx-background-color: white; -fx-padding: 15px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);");
+        barChart.setTitle("Weekly System Uptime");
+        barChart.setAnimated(false);
         barChart.setCategoryGap(10);
         barChart.setBarGap(0);
-        
+        barChart.setLegendVisible(false);
+    
+        // Create series and populate data
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
         try {
             DatabaseModule dbModule = new DatabaseModule();
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            double maxHours = 0;
+            Map<String, Long> weeklyUptime = dbModule.getWeeklyUptime();
             
-            // Get data for last 7 days
             LocalDate today = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("EEE");
             
             for (int i = 6; i >= 0; i--) {
                 LocalDate date = today.minusDays(i);
-                String formattedDate = date.format(formatter);
                 String dayName = date.format(dayFormatter);
+                String dbDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 
-                ArrayList<ApplicationHistory> apps = dbModule.getDateSpecificStoredApplications(formattedDate);
-                double totalHours = apps.stream()
-                    .mapToDouble(app -> app.getDuration() / 3600.0)
-                    .sum();
-                    
-                if (i == 0) {
-                    ArrayList<ProcessInfo> runningApps = FrontendProcessLister.getProcessList();
-                    double runningHours = runningApps.stream()
-                        .mapToDouble(app -> app.getDuration().toSeconds() / 3600.0)
-                        .sum();
-                    totalHours += runningHours;
-                }
-                
-                XYChart.Data<String, Number> data = new XYChart.Data<>(dayName, totalHours);
-                series.getData().add(data);
-                maxHours = Math.max(maxHours, totalHours);
-                
-                // Add tooltip
-                data.nodeProperty().addListener((ov, oldNode, newNode) -> {
-                    if (newNode != null) {
-                        Tooltip tooltip = new Tooltip(
-                            String.format("%.2f hours", data.getYValue().doubleValue())
-                        );
-                        Tooltip.install(newNode, tooltip);
-                    }
-                });
+                double hours = weeklyUptime.getOrDefault(dbDate, 0L) / 3600.0;
+                series.getData().add(new XYChart.Data<>(dayName, hours));
             }
             
-            // Set y-axis range based on max usage
-            yAxis.setAutoRanging(false);
-            yAxis.setLowerBound(0);
-            yAxis.setUpperBound(Math.ceil(maxHours) + 1);
+            // Add tooltips
+            series.getData().forEach(data -> {
+                data.nodeProperty().addListener((ov, oldNode, newNode) -> {
+                    if (newNode != null) {
+                        double hours = data.getYValue().doubleValue();
+                        int wholeHours = (int) hours;
+                        int minutes = (int) ((hours - wholeHours) * 60);
+                        String tooltipText = String.format("%s\n%d hours %d minutes", 
+                            data.getXValue(), wholeHours, minutes);
+                        Tooltip tooltip = new Tooltip(tooltipText);
+                        Tooltip.install(newNode, tooltip);
+                        newNode.setStyle("-fx-bar-fill:rgb(106, 179, 172);");
+                    }
+                });
+            });
             
             barChart.getData().add(series);
-            barChart.setLegendVisible(false);
-            
-            // Style bars
-            series.getData().forEach(data -> 
-                data.getNode().setStyle("-fx-bar-fill: #80CBC4;")
-            );
             
         } catch (Exception e) {
             System.err.println("Error creating bar chart: " + e.getMessage());
         }
-        
+    
         return barChart;
     }
+        private long getTomorrowMidnight() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTimeInMillis();
+        }
 
     private String formatDuration(Duration duration) {
         long hours = duration.toHours();

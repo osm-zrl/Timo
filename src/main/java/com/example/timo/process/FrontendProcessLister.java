@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class FrontendProcessLister {
@@ -59,5 +61,26 @@ public class FrontendProcessLister {
 
         // Convert List to Array and return
         return processList;
+    }
+    public static Duration getSystemUptime() {
+        String command = "powershell.exe -Command \"$uptime = (Get-Date) - (Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime; Write-Output $uptime.TotalSeconds\"";
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", command);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+    
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String uptimeStr = reader.readLine();
+            
+            process.waitFor();
+            
+            if (uptimeStr != null && !uptimeStr.isEmpty()) {
+                double seconds = Double.parseDouble(uptimeStr);
+                return Duration.ofSeconds((long)seconds);
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting system uptime: " + e.getMessage());
+        }
+        return Duration.ZERO;
     }
 }

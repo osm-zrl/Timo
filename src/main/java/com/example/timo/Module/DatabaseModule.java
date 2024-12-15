@@ -3,11 +3,10 @@ package com.example.timo.Module;
 import com.example.timo.Database.DatabaseConnection;
 
 import java.sql.*;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseModule {
 
@@ -35,9 +34,7 @@ public class DatabaseModule {
                     "id INTEGER PRIMARY KEY, " +
                     "name TEXT, " +
                     "duration INTEGER, " +
-                    "date TEXT CHECK (date = strftime('%Y-%m-%d', date))," +
-                    "start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
-                    "end_time TIMESTAMP" +
+                    "date TEXT CHECK (date = strftime('%Y-%m-%d', date))" +
                     ")";
                 stmt.executeUpdate(createApplicationsTableSQL);
 
@@ -47,11 +44,93 @@ public class DatabaseModule {
                     "usage_limit INTEGER NOT NULL" +
                     ")";
                 stmt.executeUpdate(createApplicationsUsageLimitTableSQL);
+
+                String createSystemUptimeTableSQL = "CREATE TABLE IF NOT EXISTS SystemUptime (" +
+                    "id INTEGER PRIMARY KEY, " +
+                    "date TEXT CHECK (date = strftime('%Y-%m-%d', date)), " +
+                    "uptime_seconds INTEGER, " +
+                    "last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP " +
+                    ")";
+                stmt.executeUpdate(createSystemUptimeTableSQL);
             } else {
                 System.out.println("Error: could not create table");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    public void updateDailyUptime(String date, long uptimeSeconds) {
+        // First check if we need to update
+        String checkSql = "SELECT uptime_seconds, strftime('%s', 'now') - strftime('%s', last_update) as seconds_since_update " +
+                         "FROM SystemUptime WHERE date = ?";
+        String insertSql = "INSERT OR REPLACE INTO SystemUptime (date, uptime_seconds, last_update) " +
+                          "VALUES (?, ?, datetime('now', 'localtime'))";
+                          
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false); // Begin transaction
+    
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, date);
+                ResultSet rs = checkStmt.executeQuery();
+                
+                boolean shouldUpdate = true;
+                if (rs.next()) {
+                    long secondsSinceLastUpdate = rs.getLong("seconds_since_update");
+                    long lastUptime = rs.getLong("uptime_seconds");
+                    
+                    // Update only if:
+                    // 1. More than 5 minutes since last update OR
+                    // 2. Uptime changed significantly
+                    shouldUpdate = secondsSinceLastUpdate > 300 || 
+                                 Math.abs(uptimeSeconds - lastUptime) > 60;
+                }
+                
+                if (shouldUpdate) {
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                        insertStmt.setString(1, date);
+                        insertStmt.setLong(2, uptimeSeconds);
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
+            
+            conn.commit(); // Commit transaction
+        } catch (SQLException e) {
+            System.err.println("Error updating uptime: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public Map<String, Long> getWeeklyUptime() {
+        Map<String, Long> uptimeData = new HashMap<>();
+        String sql = "SELECT date, uptime_seconds FROM SystemUptime " +
+                    "WHERE date >= date('now', '-6 days') " +
+                    "ORDER BY date DESC";
+        
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String date = rs.getString("date");
+                long seconds = rs.getLong("uptime_seconds");
+                System.out.println("Retrieved uptime for " + date + ": " + seconds + " seconds"); // Debug log
+                uptimeData.put(date, seconds);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting weekly uptime: " + e.getMessage());
+        }
+        return uptimeData;
+    }
+
+    public void cleanupOldRecords() {
+        String sql = "DELETE FROM SystemUptime WHERE date < date('now', '-7 days')";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int deletedRows = stmt.executeUpdate();
+            System.out.println("Cleaned up " + deletedRows + " old uptime records");
+        } catch (SQLException e) {
+            System.err.println("Error cleaning up old records: " + e.getMessage());
         }
     }
 
@@ -69,10 +148,8 @@ public class DatabaseModule {
                 String name = rs.getString("name");
                 int duration = rs.getInt("duration");
                 String date = rs.getString("date");
-                Timestamp start_time = rs.getTimestamp("start_time");
-                Timestamp end_time = rs.getTimestamp("end_time");
 
-                ApplicationHistory app = new ApplicationHistory(id, name, date, duration, start_time, end_time);
+                ApplicationHistory app = new ApplicationHistory(id, name, date, duration);
                 list.add(app);
             }
         } catch (SQLException e) {
@@ -93,14 +170,12 @@ public class DatabaseModule {
             stmt.setString(1, dateInput);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    ApplicationHistory app = new ApplicationHistory(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("date"),
-                        rs.getInt("duration"),
-                        rs.getTimestamp("start_time"),
-                        rs.getTimestamp("end_time")
-                    );
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    int duration = rs.getInt("duration");
+                    String date = rs.getString("date");
+
+                    ApplicationHistory app = new ApplicationHistory(id, name, date, duration);
                     list.add(app);
                 }
             }
@@ -130,11 +205,9 @@ public class DatabaseModule {
                     String appName = rs.getString("name");
                     int duration = rs.getInt("duration");
                     String date = rs.getString("date");
-                    Timestamp start_time = rs.getTimestamp("start_time");
-                    Timestamp end_time = rs.getTimestamp("end_time");
 
                     // Create a new ApplicationHistory object
-                    app = new ApplicationHistory(id, appName, date, duration, start_time, end_time);
+                    app = new ApplicationHistory(id, appName, date, duration);
                 }
             }
         } catch (SQLException e) {
@@ -146,7 +219,7 @@ public class DatabaseModule {
 
     // Increment stored application's duration by an amount
     public boolean incrementDurationStoredApplication(int id, long duration) throws Exception {
-        String sql = "UPDATE Applications SET duration = ?, end_time = CURRENT_TIMESTAMP WHERE id = ?";
+        String sql = "UPDATE Applications SET duration = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -171,9 +244,7 @@ public class DatabaseModule {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new ApplicationHistory(id, rs.getString("name"),
-                     rs.getString("date"), rs.getInt("duration"),
-                     rs.getTimestamp("start_time"), rs.getTimestamp("end_time"));
+                    return new ApplicationHistory(id, rs.getString("name"), rs.getString("date"), rs.getInt("duration"));
                 } else {
                     return null;
                 }
@@ -184,7 +255,7 @@ public class DatabaseModule {
     //Store new ApplicationHistory in database
     public void insertApplication(ApplicationHistory applicationHistory) throws SQLException {
         // SQL query to insert a new row into the Applications table
-        String sql = "INSERT INTO Applications (name, duration, date, start_time, end_time) VALUES (?, ?, ?, datetime('now', 'localtime'), datetime('now', 'localtime'))";
+        String sql = "INSERT INTO Applications (name, duration, date) VALUES (?, ?, ?)";
 
         // Establish the database connection and execute the insert query
         try (Connection conn = DatabaseConnection.getConnection();
@@ -250,28 +321,4 @@ public class DatabaseModule {
             }
         }
     }
-
-    public double getActualUsageHours(String date) {
-        try {
-            // First get all apps for that date
-            String query = "SELECT SUM(duration) as total_duration FROM Applications WHERE date = ?";
-            try (Connection conn = DatabaseConnection.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(query)) {
-                
-                stmt.setString(1, date);
-                ResultSet rs = stmt.executeQuery();
-    
-                if (rs.next()) {
-                    // Convert seconds to hours
-                    double totalSeconds = rs.getDouble("total_duration");
-                    return totalSeconds / 3600.0; // Convert seconds to hours
-                }
-            }
-            return 0.0;
-        } catch (SQLException e) {
-            System.err.println("Error calculating usage hours: " + e.getMessage());
-            return 0.0;
-        }
-    }
-
 }
