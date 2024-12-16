@@ -61,44 +61,38 @@ public class DatabaseModule {
     }
 
     public void updateDailyUptime(String date, long uptimeSeconds) {
-        // First check if we need to update
-        String checkSql = "SELECT uptime_seconds, strftime('%s', 'now') - strftime('%s', last_update) as seconds_since_update " +
-                         "FROM SystemUptime WHERE date = ?";
-        String insertSql = "INSERT OR REPLACE INTO SystemUptime (date, uptime_seconds, last_update) " +
-                          "VALUES (?, ?, datetime('now', 'localtime'))";
+        String checkSql = "SELECT id, uptime_seconds FROM SystemUptime WHERE date = ?";
+        String insertSql = "INSERT INTO SystemUptime (id, date, uptime_seconds, last_update) " +
+                          "VALUES ((SELECT COALESCE(MAX(id), 0) + 1 FROM SystemUptime), ?, ?, datetime('now', 'localtime'))";
+        String updateSql = "UPDATE SystemUptime SET uptime_seconds = ?, last_update = datetime('now', 'localtime') " +
+                          "WHERE date = ?";
                           
         try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false); // Begin transaction
-    
             try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
                 checkStmt.setString(1, date);
                 ResultSet rs = checkStmt.executeQuery();
                 
-                boolean shouldUpdate = true;
                 if (rs.next()) {
-                    long secondsSinceLastUpdate = rs.getLong("seconds_since_update");
                     long lastUptime = rs.getLong("uptime_seconds");
-                    
-                    // Update only if:
-                    // 1. More than 5 minutes since last update OR
-                    // 2. Uptime changed significantly
-                    shouldUpdate = secondsSinceLastUpdate > 300 || 
-                                 Math.abs(uptimeSeconds - lastUptime) > 60;
-                }
-                
-                if (shouldUpdate) {
+                    if (Math.abs(uptimeSeconds - lastUptime) > 60) {
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                            updateStmt.setLong(1, uptimeSeconds);
+                            updateStmt.setString(2, date);
+                            updateStmt.executeUpdate();
+                            System.out.println("Updated uptime to: " + uptimeSeconds);
+                        }
+                    }
+                } else {
                     try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                         insertStmt.setString(1, date);
                         insertStmt.setLong(2, uptimeSeconds);
                         insertStmt.executeUpdate();
+                        System.out.println("Inserted new uptime: " + uptimeSeconds);
                     }
                 }
             }
-            
-            conn.commit(); // Commit transaction
         } catch (SQLException e) {
             System.err.println("Error updating uptime: " + e.getMessage());
-            e.printStackTrace();
         }
     }
     

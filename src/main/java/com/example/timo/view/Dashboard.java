@@ -115,64 +115,52 @@ public class Dashboard extends Application {
                 dbModule.cleanupOldRecords();
             }
         }, getTomorrowMidnight(), 24 * 60 * 60 * 1000); // Run daily
+        
         // In Dashboard.java start() method, update scheduler:
-
-    scheduler = Executors.newSingleThreadScheduledExecutor();
-    scheduler.scheduleAtFixedRate(() -> {
-        try {
-            // Get current uptime
-            Duration systemUptime = FrontendProcessLister.getSystemUptime();
-            
-            // Get current date
-            LocalDate today = LocalDate.now();
-            String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            
-            // Update database and UI on JavaFX thread
-            Platform.runLater(() -> {
-                try {
-                    // Update system uptime in database
-                    dbModule.updateDailyUptime(formattedDate, systemUptime.getSeconds());
-                    
-                    // Update processes
-                    applicationsController.updateProcesses();
-                    
-                    // Update UI components
-                    updateProcessTable();
-                    
-                    // Get charts container and update charts
-                    HBox chartsContainer = (HBox) ((VBox) table.getParent().getParent()).getChildren().get(0);
-                    
-                    if (chartsContainer != null && chartsContainer.getChildren().size() >= 2) {
-                        // Create and style new charts
-                        PieChart newPieChart = createDynamicPieChart();
-                        BarChart<String, Number> newBarChart = createWeeklyBarChart();
-                        
-                        // Set size constraints and styles
-                        String chartStyle = "-fx-background-color: white; -fx-padding: 15px; " +
-                            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);";
-                        
-                        for (Node chart : new Node[]{newPieChart, newBarChart}) {
-                            ((Region) chart).setMinSize(300, 200);
-                            ((Region) chart).setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-                            ((Region) chart).setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                            chart.setStyle(chartStyle);
-                            HBox.setHgrow(chart, Priority.ALWAYS);
-                        }
+        new Thread(() -> {
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                // Get current uptime
+                Duration systemUptime = FrontendProcessLister.getSystemUptime();
+                LocalDate today = LocalDate.now();
+                String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        
+                // First update database
+                dbModule.updateDailyUptime(formattedDate, systemUptime.getSeconds());
+                
+                // Then update processes
+                applicationsController.updateProcesses();
+        
+                // Finally update UI on JavaFX thread
+                Platform.runLater(() -> {
+                    try {
+                        // Update table
+                        updateProcessTable();
                         
                         // Update charts
-                        chartsContainer.getChildren().set(0, newPieChart);
-                        chartsContainer.getChildren().set(1, newBarChart);
+                        HBox chartsContainer = (HBox) ((VBox) table.getParent().getParent()).getChildren().get(0);
+                        if (chartsContainer != null && chartsContainer.getChildren().size() >= 2) {
+                            PieChart newPieChart = createDynamicPieChart();
+                            BarChart<String, Number> newBarChart = createWeeklyBarChart();
+                            
+                            // Style charts
+                            styleCharts(newPieChart, newBarChart);
+                            
+                            // Update container
+                            chartsContainer.getChildren().set(0, newPieChart);
+                            chartsContainer.getChildren().set(1, newBarChart);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error updating UI: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    System.err.println("Error updating UI: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            });
-        } catch (Exception e) {
-            System.err.println("Error in scheduler: " + e.getMessage());
-            e.printStackTrace();
-        }
+                });
+            } catch (Exception e) {
+                System.err.println("Error in scheduler: " + e.getMessage());
+            }
         }, 0, 5, TimeUnit.SECONDS);
+        }, "SchedulerThread").start();
+
 
         primaryStage.setOnCloseRequest(e -> {
             if (scheduler != null) {
@@ -180,6 +168,20 @@ public class Dashboard extends Application {
             }
         });
     }
+
+            // Add this helper method
+            private void styleCharts(PieChart pieChart, BarChart<String, Number> barChart) {
+                String chartStyle = "-fx-background-color: white; -fx-padding: 15px; " +
+                    "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);";
+                
+                for (Node chart : new Node[]{pieChart, barChart}) {
+                    ((Region) chart).setMinSize(300, 200);
+                    ((Region) chart).setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                    ((Region) chart).setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+                    chart.setStyle(chartStyle);
+                    HBox.setHgrow(chart, Priority.ALWAYS);
+                }
+            }
 
     // --- Create Dashboard ---
     private Node createDashboard(Stage primaryStage) {
